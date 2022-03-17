@@ -2,7 +2,9 @@ import { HttpPostClient, HttpPostParams } from '../protocols/http/http-post-clie
 
 export class HttpPostClientSpy implements HttpPostClient {
     url?: string
-    async post ({ url }: HttpPostParams): Promise<void> {
+    body?: object
+    async post ({ url, body }: HttpPostParams): Promise<void> {
       this.url = url
+      this.body = body
     }
 }
