@@ -7,6 +7,7 @@
   "license": "MIT",
   "scripts": {
     "start": "webpack-dev-server --open",
+    "serve": "webpack serve --open",
     "test": "jest --passWithNoTests --no-cache --runInBand",
     "test:watch": "npm run test -- --watch",
     "test:staged": "npm run test -- --findRelatedTests",
