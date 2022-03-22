@@ -62,25 +62,6 @@ button {
             text-transform: uppercase;
         }
 
-        input {
-            flex-grow: 1;
-        }
-
-        .inputWrap {
-            margin-top: 16px;
-            display: flex;
-            flex-direction: row;
-            position: relative;
-            align-items: center;
-        }
-
-        .status {
-            position: absolute;
-            right: 8px;
-            font-size: 10px;
-            cursor: help;
-        }
-
         button {
             margin: 32px 0 16px;
         }
