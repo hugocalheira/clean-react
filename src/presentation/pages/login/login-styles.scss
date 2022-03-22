@@ -1,44 +1,5 @@
 @import "../../styles/colors.scss";
 
-* {
-  font-family: 'Roboto', sans-serif;
-  font-size: 16px;
-  padding: 0;
-  margin: 0;
-  box-sizing: border-box;
-}
-
-body {
-    background-color: $background;
-}
-
-input[type="email"],
-input[type="password"] {
-    border: 1px solid $primaryLight;
-    line-height: 40px;
-    border-radius: 4px;
-    outline: none;
-    padding: 0 32px 0 8px;
-
-    &:focus {
-        border-color: $primary;
-    }
-}
-
-button {
-    background-color: $primary;
-    color: $white;
-    border-radius: 8px;
-    font-size: 16px;
-    line-height: 60px;
-    border: none;
-    cursor: pointer;
-
-    &:hover {
-        opacity: .9;
-    }
-}
-
 .login{
     display: flex;
     flex-direction: column;
