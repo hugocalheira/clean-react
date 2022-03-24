@@ -19,7 +19,7 @@ describe('Login Component', () => {
 
   test('Should start with initial state', () => {
     const {
-      // getByTestId,
+      getByTestId,
       getByText
     } = render(<Login />)
 
@@ -31,5 +31,13 @@ describe('Login Component', () => {
 
     const submitButton = getByText(/Entrar/i).closest('button')
     expect(submitButton.disabled).toBe(true)
+
+    const emailStatus = getByTestId('email-status')
+    expect(emailStatus.title).toBe('Campo obrigatório')
+    expect(emailStatus.textContent).toBe('🔴')
+
+    const passwordStatus = getByTestId('password-status')
+    expect(passwordStatus.title).toBe('Campo obrigatório')
+    expect(passwordStatus.textContent).toBe('🔴')
   })
 })
