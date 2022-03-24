@@ -34,7 +34,13 @@
     border: none;
     cursor: pointer;
 
-    &:hover {
+    &:disabled {
+        background-color: $disabledBackground;
+        color: $disabledColor;
+        cursor: not-allowed;
+    }
+
+    &:hover:not(:disabled) {
         opacity: .9;
     }
 }
