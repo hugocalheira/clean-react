@@ -13,7 +13,23 @@ describe('Login Component', () => {
     // expect(spinner).toBe(null)
 
     const { getByTestId } = render(<Login />)
-    const errorWrap = getByTestId('errorWrap') || null
+    const errorWrap = getByTestId('errorWrap')
     expect(errorWrap.childElementCount).toBe(0)
+  })
+
+  test('Should start with initial state', () => {
+    const {
+      // getByTestId,
+      getByText
+    } = render(<Login />)
+
+    // const submitButton = getByTestId('submitButton')
+    // expect(submitButton).toHaveProperty('disabled', true)
+
+    // const submitButton = getByTestId('submitButton') as HTMLButtonElement
+    // expect(submitButton.disabled).toBe(true)
+
+    const submitButton = getByText(/Entrar/i).closest('button')
+    expect(submitButton.disabled).toBe(true)
   })
 })
