@@ -2,7 +2,7 @@ import React from 'react'
 import { cleanup, fireEvent, render, RenderResult } from '@testing-library/react'
 // import { Login } from '@/presentation/pages'
 import Login from '@/presentation/pages/login/login'
-import ValidationSpy from '@/presentation/test/mock-validation'
+import { ValidationSpy } from '@/presentation/test'
 
 type SutTypes = {
   sut: RenderResult

@@ -1,6 +1,6 @@
 import { Validation } from '@/presentation/protocols/validation'
 
-export default class ValidationSpy implements Validation {
+export class ValidationSpy implements Validation {
     errorMessage: string
     fieldName: string
     fieldValue: string
