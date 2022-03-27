@@ -11,7 +11,7 @@ type SutTypes = {
 
 const MakeSut = (): SutTypes => {
   const validationStub = new ValidationStub()
-  validationStub.errorMessage = faker.random.words(5)
+  validationStub.errorMessage = faker.random.words()
   const sut = render(<Login validation={validationStub} />)
   return {
     sut,
@@ -40,24 +40,6 @@ describe('Login Component', () => {
     expect(passwordStatus.textContent).toBe('🔴')
   })
 
-  // test('Should call Validation with correct email', async () => {
-  //   const { sut, validationStub } = MakeSut()
-  //   const emailInput = sut.getByPlaceholderText('Digite seu e-mail')
-  //   const email = faker.internet.email()
-  //   fireEvent.input(emailInput, { target: { value: email } })
-  //   expect(validationStub.fieldName).toBe('email')
-  //   expect(validationStub.fieldValue).toBe(email)
-  // })
-
-  // test('Should call Validation with correct password', () => {
-  //   const { sut, validationStub } = MakeSut()
-  //   const passwordInput = sut.getByPlaceholderText('Digite sua senha')
-  //   const password = faker.internet.password()
-  //   fireEvent.input(passwordInput, { target: { value: password } })
-  //   expect(validationStub.fieldName).toBe('password')
-  //   expect(validationStub.fieldValue).toBe(password)
-  // })
-
   test('Should show email error if Validation fails', () => {
     const { sut, validationStub } = MakeSut()
     const emailInput = sut.getByPlaceholderText('Digite seu e-mail')
@@ -76,5 +58,17 @@ describe('Login Component', () => {
     const passwordStatus = sut.getByTestId('password-status')
     expect(passwordStatus.title).toBe(validationStub.errorMessage)
     expect(passwordStatus.textContent).toBe('🔴')
+  })
+
+  test('Should show valid status if Validation succeeds', () => {
+    // const { sut, validationStub } = MakeSut()
+    const validationStub = new ValidationStub()
+    const sut = render(<Login validation={validationStub} />)
+
+    const passwordInput = sut.getByPlaceholderText('Digite sua senha')
+    fireEvent.input(passwordInput, { target: { value: faker.internet.password() } })
+    const passwordStatus = sut.getByTestId('password-status')
+    expect(passwordStatus.title).toBe('Tudo certo!')
+    expect(passwordStatus.textContent).toBe('🟢')
   })
 })
