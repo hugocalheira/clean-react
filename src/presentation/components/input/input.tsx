@@ -31,7 +31,6 @@ const Input: React.FC<Props> = (props: Props) => {
           readOnly
           onFocus={enableInput}
           onChange={handleChange}
-          value={state[props.name]}
         />
         <span
           title={getTitle()}
