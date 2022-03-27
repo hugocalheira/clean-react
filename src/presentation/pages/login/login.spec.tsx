@@ -3,9 +3,22 @@ import { cleanup, fireEvent, render, RenderResult } from '@testing-library/react
 import { Login } from '@/presentation/pages'
 import { ValidationStub } from '@/presentation/test'
 import faker from '@faker-js/faker'
+import { Authentication, AuthenticationParams } from '@/domain/usecases'
+import { AccountModel } from '@/domain/models'
+import { mockAccountModel } from '@/domain/test'
+
+class AuthenticationSpy implements Authentication {
+  account = mockAccountModel()
+  params: AuthenticationParams
+  async auth (params: AuthenticationParams): Promise<AccountModel> {
+    this.params = params
+    return await Promise.resolve(this.account)
+  }
+}
 
 type SutTypes = {
   sut: RenderResult
+  authenticationSpy: AuthenticationSpy
 }
 
 type SutParams = {
@@ -14,9 +27,10 @@ type SutParams = {
 
 const MakeSut = (params?: SutParams): SutTypes => {
   const validationStub = new ValidationStub()
+  const authenticationSpy = new AuthenticationSpy()
   validationStub.errorMessage = params?.validationError
-  const sut = render(<Login validation={validationStub} />)
-  return { sut }
+  const sut = render(<Login validation={validationStub} authentication={authenticationSpy} />)
+  return { sut, authenticationSpy }
 }
 
 describe('Login Component', () => {
@@ -113,5 +127,25 @@ describe('Login Component', () => {
 
     const spinner = sut.getByTestId('spinner')
     expect(spinner).toBeTruthy()
+  })
+
+  test('Should call Authentication with correct values', () => {
+    const { sut, authenticationSpy } = MakeSut()
+    const email = faker.internet.email()
+    const password = faker.internet.password()
+
+    const emailInput = sut.getByPlaceholderText('Digite seu e-mail')
+    fireEvent.input(emailInput, { target: { value: email } })
+
+    const passwordInput = sut.getByPlaceholderText('Digite sua senha')
+    fireEvent.input(passwordInput, { target: { value: password } })
+
+    const submitButton = sut.getByText(/Entrar/i).closest('button')
+    fireEvent.click(submitButton)
+
+    expect(authenticationSpy.params).toEqual({
+      email,
+      password
+    })
   })
 })
