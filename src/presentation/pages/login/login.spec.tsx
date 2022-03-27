@@ -98,4 +98,20 @@ describe('Login Component', () => {
     const submitButton = sut.getByText(/Entrar/i).closest('button')
     expect(submitButton.disabled).toBe(false)
   })
+
+  test('Should show spinner on submit', () => {
+    const { sut } = MakeSut()
+
+    const emailInput = sut.getByPlaceholderText('Digite seu e-mail')
+    fireEvent.input(emailInput, { target: { value: faker.internet.email() } })
+
+    const passwordInput = sut.getByPlaceholderText('Digite sua senha')
+    fireEvent.input(passwordInput, { target: { value: faker.internet.password() } })
+
+    const submitButton = sut.getByText(/Entrar/i).closest('button')
+    fireEvent.click(submitButton)
+
+    const spinner = sut.getByTestId('spinner')
+    expect(spinner).toBeTruthy()
+  })
 })
