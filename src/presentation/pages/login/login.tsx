@@ -18,13 +18,6 @@ const Login: React.FC<Props> = ({ validation }: Props) => {
     mainError: ''
   })
 
-  function handleSubmit () {
-    setState(oldState => ({
-      ...oldState,
-      isLoading: true
-    }))
-  }
-
   useEffect(() => {
     setState(oldState => ({
       ...oldState,
@@ -38,6 +31,14 @@ const Login: React.FC<Props> = ({ validation }: Props) => {
       passwordError: validation.validate('password', oldState.password)
     }))
   }, [state.password])
+
+  function handleSubmit (event: React.FormEvent<HTMLFormElement>): void {
+    event.preventDefault()
+    setState(oldState => ({
+      ...oldState,
+      isLoading: true
+    }))
+  }
 
   return (
     <div className={Styles.login}>
