@@ -44,13 +44,12 @@ const Login: React.FC<Props> = ({ validation }: Props) => {
     <div className={Styles.login}>
         <Header />
         <Context.Provider value={{ state, setState }}>
-          <form className={Styles.form}>
+          <form className={Styles.form} onSubmit={handleSubmit}>
               <h2>Login</h2>
 
               <Input type='email' name='email' placeholder='Digite seu e-mail'/>
               <Input type='password' name='password' placeholder='Digite sua senha'/>
               <button data-testid='submitButton' type='submit'
-              onClick={handleSubmit}
               disabled={!!state.emailError || !!state.passwordError }
               >Entrar</button>
 
