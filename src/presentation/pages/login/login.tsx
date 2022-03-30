@@ -36,12 +36,21 @@ const Login: React.FC<Props> = ({ validation, authentication }: Props) => {
 
   async function handleSubmit (event: React.FormEvent<HTMLFormElement>): Promise<void> {
     event.preventDefault()
-    const { email, password, isLoading, emailError, passwordError } = state
-    if (isLoading || emailError || passwordError) {
-      return
+    try {
+      const { email, password, isLoading, emailError, passwordError } = state
+      if (isLoading || emailError || passwordError) {
+        return
+      }
+      setState({ ...state, isLoading: true })
+      await authentication.auth({ email, password })
+    } catch (err) {
+      setState({
+        ...state,
+        isLoading: false,
+        mainError: err.message
+      })
+      console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>', err)
     }
-    setState({ ...state, isLoading: true })
-    await authentication.auth({ email, password })
   }
 
   return (
@@ -59,7 +68,6 @@ const Login: React.FC<Props> = ({ validation, authentication }: Props) => {
 
               <span className={Styles.link}>Criar conta</span>
               <FormStatus />
-
           </form>
         </Context.Provider>
         <Footer />
