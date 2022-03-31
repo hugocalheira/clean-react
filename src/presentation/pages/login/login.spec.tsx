@@ -5,6 +5,7 @@ import { ValidationStub, AuthenticationSpy } from '@/presentation/test'
 import faker from '@faker-js/faker'
 import { InvalidCredentialsError } from '@/domain/errors'
 import 'jest-localstorage-mock'
+import { Router, BrowserRouter, useNavigate } from 'react-router-dom'
 
 type SutTypes = {
   sut: RenderResult
@@ -19,7 +20,11 @@ const MakeSut = (params?: SutParams): SutTypes => {
   const validationStub = new ValidationStub()
   const authenticationSpy = new AuthenticationSpy()
   validationStub.errorMessage = params?.validationError
-  const sut = render(<Login validation={validationStub} authentication={authenticationSpy} />)
+  const sut = render(
+  <BrowserRouter>
+    <Login validation={validationStub} authentication={authenticationSpy} />
+  </BrowserRouter>
+  )
   return { sut, authenticationSpy }
 }
 
@@ -45,6 +50,13 @@ const simulateStatusForField = (sut: RenderResult, fieldName: string, validation
   expect(fieldStatus.title).toBe(validationError || 'Tudo certo!')
   expect(fieldStatus.textContent).toBe(validationError ? '🔴' : '🟢')
 }
+
+// pay attention to write it at the top level of your file
+const mockedUsedNavigate = jest.fn();
+jest.mock('react-router-dom', () => ({
+   ...jest.requireActual('react-router-dom') as any,
+  useNavigate: () => mockedUsedNavigate,
+}));
 
 describe('Login Component', () => {
   afterEach(cleanup)
@@ -149,5 +161,12 @@ describe('Login Component', () => {
     simulateValidSubmit(sut)
     await waitFor(() => sut.getByTestId('form'))
     expect(localStorage.setItem).toHaveBeenCalledWith('accessToken', authenticationSpy.account.accessToken)
+  })
+
+  test('Should navigate to /signup', () => {
+    const { sut } = MakeSut()
+    const signup = sut.getByTestId('signup')
+    fireEvent.click(signup)
+    expect(mockedUsedNavigate).toHaveBeenCalledWith('/signup')
   })
 })
