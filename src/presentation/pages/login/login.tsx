@@ -4,6 +4,8 @@ import Styles from './login-styles.scss'
 import Context from '@/presentation/contexts/form/form-context'
 import { Validation } from '@/presentation/protocols/validation'
 import { Authentication } from '@/domain/usecases'
+import { useNavigate, useLocation } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 
 type Props = {
   validation: Validation
@@ -19,6 +21,13 @@ const Login: React.FC<Props> = ({ validation, authentication }: Props) => {
     passwordError: '',
     mainError: ''
   })
+
+  const navigate = useNavigate()
+  const location = useLocation()
+
+  useEffect(() => {
+    navigate(location.pathname)
+  }, [location.pathname])
 
   useEffect(() => {
     setState(oldState => ({
@@ -67,7 +76,8 @@ const Login: React.FC<Props> = ({ validation, authentication }: Props) => {
               disabled={!!state.emailError || !!state.passwordError }
               >Entrar</button>
 
-              <span className={Styles.link}>Criar conta</span>
+              <Link to='/signup' data-testid='signup' className={Styles.link}>Criar conta</Link>
+              {/* <span onClick={() => navigate('/signup')} data-testid='signup' className={Styles.link}>Criar conta</span> */}
               <FormStatus />
           </form>
         </Context.Provider>
