@@ -11,7 +11,5 @@ export class ValidationComposite implements Validation {
         return error.message
       }
     }
-
-    return null
-  };
+  }
 }
