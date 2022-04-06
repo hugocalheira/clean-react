@@ -27,6 +27,7 @@ const Input: React.FC<Props> = (props: Props) => {
     <div className={Styles.inputWrap}>
         <input
           {...props}
+          data-testid={props.name}
           autoComplete='off'
           readOnly
           onFocus={enableInput}
