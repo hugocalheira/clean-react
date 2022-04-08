@@ -3,16 +3,17 @@ import { Header, Input, Footer, FormStatus } from '@/presentation/components'
 import Styles from './login-styles.scss'
 import Context from '@/presentation/contexts/form/form-context'
 import { Validation } from '@/presentation/protocols/validation'
-import { Authentication } from '@/domain/usecases'
+import { Authentication, SaveAccessToken } from '@/domain/usecases'
 import { useNavigate } from 'react-router-dom'
 import { act } from 'react-dom/test-utils'
 
 type Props = {
   validation: Validation
   authentication: Authentication
+  saveAccessToken: SaveAccessToken
 }
 
-const Login: React.FC<Props> = ({ validation, authentication }: Props) => {
+const Login: React.FC<Props> = ({ validation, authentication, saveAccessToken }: Props) => {
   const [state, setState] = useState({
     isLoading: false,
     email: '',
@@ -47,8 +48,8 @@ const Login: React.FC<Props> = ({ validation, authentication }: Props) => {
 
     setState({ ...state, isLoading: true })
     await authentication.auth({ email, password })
-      .then(account => {
-        localStorage.setItem('accessToken', account.accessToken)
+      .then(async account => {
+        await saveAccessToken.save(account.accessToken)
         navigate('/', { replace: true })
       }).catch(err => {
         act(() =>
