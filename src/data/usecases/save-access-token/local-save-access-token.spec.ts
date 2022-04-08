@@ -2,12 +2,12 @@ import { LocalSaveAccessToken } from './local-save-access-token'
 import faker from '@faker-js/faker'
 import { SetStorageSpy } from '@/data/test'
 
-type sutType = {
+type SutTypes = {
   sut: LocalSaveAccessToken
   setStorageSpy: SetStorageSpy
 }
 
-const makeSut = (): sutType => {
+const makeSut = (): SutTypes => {
   const setStorageSpy = new SetStorageSpy()
   const sut = new LocalSaveAccessToken(setStorageSpy)
   return { sut, setStorageSpy }
