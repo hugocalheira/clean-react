@@ -12,7 +12,7 @@
     "test:watch": "npm run test -- --watch",
     "test:staged": "npm run test -- --findRelatedTests",
     "test:ci": "npm test -- --coverage",
-    "test:coveralls": "npm test:ci && coveralls < coverage/lcov.info",
+    "test:coveralls": "npm run test:ci && coveralls < coverage/lcov.info",
     "check": "npm-check -u -s",
     "lint": "eslint src/**"
   },
