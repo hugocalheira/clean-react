@@ -47,19 +47,20 @@ const Login: React.FC<Props> = ({ validation, authentication, saveAccessToken }:
     }
 
     setState({ ...state, isLoading: true })
-    await authentication.auth({ email, password })
-      .then(async account => {
-        await saveAccessToken.save(account.accessToken)
-        navigate('/', { replace: true })
-      }).catch(err => {
-        act(() =>
-          setState({
-            ...state,
-            isLoading: false,
-            mainError: err.message
-          })
-        )
-      })
+
+    try {
+      const account = await authentication.auth({ email, password })
+      await saveAccessToken.save(account.accessToken)
+      navigate('/', { replace: true })
+    } catch (err) {
+      act(() =>
+        setState({
+          ...state,
+          isLoading: false,
+          mainError: err.message
+        })
+      )
+    }
   }
 
   return (
