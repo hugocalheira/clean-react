@@ -5,7 +5,6 @@ import Context from '@/presentation/contexts/form/form-context'
 import { Validation } from '@/presentation/protocols/validation'
 import { Authentication, SaveAccessToken } from '@/domain/usecases'
 import { useNavigate } from 'react-router-dom'
-import { act } from 'react-dom/test-utils'
 
 type Props = {
   validation: Validation
@@ -53,13 +52,11 @@ const Login: React.FC<Props> = ({ validation, authentication, saveAccessToken }:
       await saveAccessToken.save(account.accessToken)
       navigate('/', { replace: true })
     } catch (err) {
-      act(() =>
-        setState({
-          ...state,
-          isLoading: false,
-          mainError: err.message
-        })
-      )
+      setState({
+        ...state,
+        isLoading: false,
+        mainError: err.message
+      })
     }
   }
 

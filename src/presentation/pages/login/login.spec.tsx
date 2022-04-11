@@ -68,8 +68,8 @@ const testElementExist = (sut: RenderResult, fieldname: string): void => {
   expect(element).toBeTruthy()
 }
 
-const testElementText = (sut: RenderResult, fieldname: string, text: string): void => {
-  const { textContent } = sut.getByTestId(fieldname)
+const testElementText = async (sut: RenderResult, fieldname: string, text: string): Promise<void> => {
+  const { textContent } = await sut.findByTestId(fieldname) // findByTestId is async
   expect(textContent).toBe(text)
 }
 
@@ -161,9 +161,9 @@ describe('Login Component', () => {
   test('Should present error if Authentication fails', async () => {
     const { sut, authenticationSpy } = MakeSut()
     const error = new InvalidCredentialsError()
-    jest.spyOn(authenticationSpy, 'auth').mockRejectedValueOnce(error) // Promise.reject(error)
+    jest.spyOn(authenticationSpy, 'auth').mockReturnValueOnce(Promise.reject(error))
     await simulateValidSubmit(sut)
-    testElementText(sut, 'main-error', error.message)
+    await testElementText(sut, 'main-error', error.message)
     testErrorWrapChildCount(sut, 1)
   })
 
@@ -180,7 +180,7 @@ describe('Login Component', () => {
     const error = new InvalidCredentialsError()
     jest.spyOn(saveAccessTokenMock, 'save').mockReturnValueOnce(Promise.reject(error))
     await simulateValidSubmit(sut)
-    testElementText(sut, 'main-error', error.message)
+    await testElementText(sut, 'main-error', error.message)
     testErrorWrapChildCount(sut, 1)
   })
 
