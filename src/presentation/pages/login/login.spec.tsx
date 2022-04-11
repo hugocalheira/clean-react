@@ -1,5 +1,5 @@
 import React from 'react'
-import { cleanup, fireEvent, render, RenderResult, waitFor } from '@testing-library/react'
+import { act, cleanup, fireEvent, render, RenderResult, waitFor } from '@testing-library/react'
 import { Login } from '@/presentation/pages'
 import { ValidationStub, AuthenticationSpy, SaveAccessTokenMock } from '@/presentation/test'
 import faker from '@faker-js/faker'
@@ -179,7 +179,7 @@ describe('Login Component', () => {
     const { sut, saveAccessTokenMock } = MakeSut()
     const error = new InvalidCredentialsError()
     jest.spyOn(saveAccessTokenMock, 'save').mockReturnValueOnce(Promise.reject(error))
-    await simulateValidSubmit(sut)
+    await act(async () => await simulateValidSubmit(sut))
     await testElementText(sut, 'main-error', error.message)
     testErrorWrapChildCount(sut, 1)
   })
