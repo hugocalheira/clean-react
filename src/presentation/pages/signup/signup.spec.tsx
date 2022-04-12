@@ -1,31 +1,49 @@
 import React from 'react'
-import { render, RenderResult } from '@testing-library/react'
+import { cleanup, render, RenderResult } from '@testing-library/react'
 import SignUp from './signup'
 import { BrowserRouter } from 'react-router-dom'
-import { Helper } from '@/presentation/test'
+import { Helper, ValidationStub } from '@/presentation/test'
+import faker from '@faker-js/faker'
 
 type SutTypes = {
   sut: RenderResult
 }
 
-const MakeSut = (): SutTypes => {
+type SutParams = {
+  validationError: string
+}
+
+const MakeSut = (params?: SutParams): SutTypes => {
+  const validationStub = new ValidationStub()
+  validationStub.errorMessage = params?.validationError
   const sut = render(
     <BrowserRouter>
-        <SignUp />
+        <SignUp
+            validation={validationStub}
+        />
     </BrowserRouter>
   )
   return { sut }
 }
 
 describe('SignUp Component', () => {
+  afterEach(cleanup)
+
   test('Should start with initial state', () => {
-    const validationError = 'Campo obrigatório'
-    const { sut } = MakeSut()
+    const validationError = faker.random.words()
+    const { sut } = MakeSut({ validationError })
     Helper.testButtonIsDisabled(sut, /Entrar/i)
     Helper.testChildCount(sut, 'errorWrap', 0)
     Helper.testStatusForField(sut, 'name', validationError)
-    Helper.testStatusForField(sut, 'email', validationError)
-    Helper.testStatusForField(sut, 'password', validationError)
-    Helper.testStatusForField(sut, 'passwordConfirmation', validationError)
+    Helper.testStatusForField(sut, 'email', 'Campo obrigatório')
+    Helper.testStatusForField(sut, 'password', 'Campo obrigatório')
+    Helper.testStatusForField(sut, 'passwordConfirmation', 'Campo obrigatório')
+  })
+
+  test('Should show name error if Validation fails', () => {
+    const validationError = faker.random.words()
+    const { sut } = MakeSut({ validationError })
+    Helper.populateField(sut, 'name')
+    Helper.testStatusForField(sut, 'name', validationError)
   })
 })
