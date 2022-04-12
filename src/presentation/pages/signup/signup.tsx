@@ -13,8 +13,9 @@ const SignUp: React.FC<Props> = ({ validation }: Props) => {
   const [state, setState] = useState({
     isLoading: false,
     name: '',
+    email: '',
     nameError: '',
-    emailError: 'Campo obrigatório',
+    emailError: '',
     passwordError: 'Campo obrigatório',
     passwordConfirmationError: 'Campo obrigatório',
     mainError: ''
@@ -25,7 +26,8 @@ const SignUp: React.FC<Props> = ({ validation }: Props) => {
   useEffect(() => {
     setState(oldState => ({
       ...oldState,
-      nameError: validation.validate('name', oldState.name)
+      nameError: validation.validate('name', oldState.name),
+      emailError: validation.validate('email', oldState.email)
     }))
   }, [state.name])
 
