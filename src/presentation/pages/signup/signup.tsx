@@ -25,6 +25,13 @@ const SignUp: React.FC<Props> = ({ validation }: Props) => {
 
   const navigate = useNavigate()
 
+  function isButtonDisabled (): boolean {
+    return !!state.nameError ||
+    !!state.emailError ||
+    !!state.passwordError ||
+    !!state.passwordConfirmationError
+  }
+
   useEffect(() => {
     setState(oldState => ({
       ...oldState,
@@ -45,7 +52,7 @@ const SignUp: React.FC<Props> = ({ validation }: Props) => {
               <Input type='email' name='email' placeholder='Digite seu e-mail'/>
               <Input type='password' name='password' placeholder='Digite sua senha'/>
               <Input type='password' name='passwordConfirmation' placeholder='Confirme sua senha'/>
-              <button type='submit' disabled>Entrar</button>
+              <button type='submit' disabled={isButtonDisabled()}>Entrar</button>
               <span onClick={() => navigate('/login')} className={Styles.link}>Voltar para Login</span>
               <FormStatus />
           </form>
