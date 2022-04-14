@@ -57,7 +57,7 @@ describe('SignUp Component', () => {
   test('Should start with initial state', () => {
     const validationError = faker.random.words()
     const { sut } = MakeSut({ validationError })
-    Helper.testButtonIsDisabled(sut, /Entrar/i)
+    Helper.testButtonIsDisabled(sut, 'submit')
     Helper.testChildCount(sut, 'errorWrap', 0)
     Helper.testStatusForField(sut, 'name', validationError)
     Helper.testStatusForField(sut, 'email', validationError)
@@ -123,7 +123,7 @@ describe('SignUp Component', () => {
     Helper.populateField(sut, 'email')
     Helper.populateField(sut, 'password')
     Helper.populateField(sut, 'passwordConfirmation')
-    Helper.testButtonIsDisabled(sut, /Entrar/i, false)
+    Helper.testButtonIsDisabled(sut, 'submit', false)
   })
 
   test('Should show spinner on submit', async () => {

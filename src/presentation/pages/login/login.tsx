@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Header, Input, Footer, FormStatus } from '@/presentation/components'
+import { Header, Input, Footer, FormStatus, SubmitButton } from '@/presentation/components'
 import Styles from './login-styles.scss'
 import Context from '@/presentation/contexts/form/form-context'
 import { Validation } from '@/presentation/protocols/validation'
@@ -15,6 +15,7 @@ type Props = {
 const Login: React.FC<Props> = ({ validation, authentication, saveAccessToken }: Props) => {
   const [state, setState] = useState({
     isLoading: false,
+    isFormInvalid: true,
     email: '',
     password: '',
     emailError: '',
@@ -25,23 +26,20 @@ const Login: React.FC<Props> = ({ validation, authentication, saveAccessToken }:
   const navigate = useNavigate()
 
   useEffect(() => {
+    const emailError = validation.validate('email', state.email)
+    const passwordError = validation.validate('password', state.password)
     setState(oldState => ({
       ...oldState,
-      emailError: validation.validate('email', oldState.email)
+      emailError,
+      passwordError,
+      isFormInvalid: !!emailError || !!passwordError
     }))
-  }, [state.email])
-
-  useEffect(() => {
-    setState(oldState => ({
-      ...oldState,
-      passwordError: validation.validate('password', oldState.password)
-    }))
-  }, [state.password])
+  }, [state.email, state.password])
 
   async function handleSubmit (event: React.FormEvent<HTMLFormElement>): Promise<void> {
     event.preventDefault()
-    const { email, password, isLoading, emailError, passwordError } = state
-    if (isLoading || emailError || passwordError) {
+    const { email, password, isLoading, isFormInvalid } = state
+    if (isLoading || isFormInvalid) {
       return
     }
 
@@ -68,9 +66,7 @@ const Login: React.FC<Props> = ({ validation, authentication, saveAccessToken }:
               <h2>Login</h2>
               <Input type='email' name='email' placeholder='Digite seu e-mail'/>
               <Input type='password' name='password' placeholder='Digite sua senha'/>
-              <button data-testid='submitButton' type='submit'
-              disabled={!!state.emailError || !!state.passwordError }
-              >Entrar</button>
+              <SubmitButton text="Entrar" />
               <span onClick={() => navigate('/signup')} data-testid='signup-link' className={Styles.link}>Criar conta</span>
               <FormStatus />
           </form>
