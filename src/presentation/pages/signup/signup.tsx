@@ -4,14 +4,15 @@ import Styles from './signup-styles.scss'
 import Context from '@/presentation/contexts/form/form-context'
 import { useNavigate } from 'react-router-dom'
 import { Validation } from '@/presentation/protocols/validation'
-import { AddAccount } from '@/domain/usecases'
+import { AddAccount, SaveAccessToken } from '@/domain/usecases'
 
 type Props = {
   validation: Validation
   addAccount: AddAccount
+  saveAccessToken: SaveAccessToken
 }
 
-const SignUp: React.FC<Props> = ({ validation, addAccount }: Props) => {
+const SignUp: React.FC<Props> = ({ validation, addAccount, saveAccessToken }: Props) => {
   const [state, setState] = useState({
     isLoading: false,
     name: '',
@@ -56,7 +57,9 @@ const SignUp: React.FC<Props> = ({ validation, addAccount }: Props) => {
     setState({ ...state, isLoading: true })
 
     try {
-      await addAccount.add({ name, email, password, passwordConfirmation })
+      const account = await addAccount.add({ name, email, password, passwordConfirmation })
+      await saveAccessToken.save(account.accessToken)
+      navigate('/', { replace: true })
     } catch (err) {
       setState({
         ...state,
