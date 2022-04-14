@@ -1,5 +1,5 @@
 import React from 'react'
-import { cleanup, fireEvent, render, RenderResult, waitFor } from '@testing-library/react'
+import { act, cleanup, fireEvent, render, RenderResult, waitFor } from '@testing-library/react'
 import SignUp from './signup'
 import { BrowserRouter } from 'react-router-dom'
 import { AddAccountSpy, Helper, SaveAccessTokenMock, ValidationStub } from '@/presentation/test'
@@ -176,5 +176,14 @@ describe('SignUp Component', () => {
       .toBe(addAccountSpy.account.accessToken)
     expect(mockedUsedNavigate)
       .toHaveBeenCalledWith('/', { replace: true })
+  })
+
+  test('Should present error if SaveAccessToken fails', async () => {
+    const { sut, saveAccessTokenMock } = MakeSut()
+    const error = new EmailInUseError()
+    jest.spyOn(saveAccessTokenMock, 'save').mockReturnValueOnce(Promise.reject(error))
+    await act(async () => await simulateValidSubmit(sut))
+    await Helper.testElementText(sut, 'main-error', error.message)
+    Helper.testChildCount(sut, 'errorWrap', 1)
   })
 })
