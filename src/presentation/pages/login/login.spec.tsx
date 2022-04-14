@@ -35,8 +35,8 @@ const MakeSut = (params?: SutParams): SutTypes => {
 }
 
 const simulateValidSubmit = async (sut: RenderResult, email = faker.internet.email(), password = faker.internet.password()): Promise<void> => {
-  Helper.populateField(sut, 'email', email)
-  Helper.populateField(sut, 'password', password)
+  Helper.populateField('email', email)
+  Helper.populateField('password', password)
   const form = sut.getByTestId('form')
   fireEvent.submit(form)
   await waitFor(() => form)
@@ -54,50 +54,50 @@ describe('Login Component', () => {
   afterEach(cleanup)
   test('Should start with initial state', () => {
     const validationError = faker.random.words()
-    const { sut } = MakeSut({ validationError })
-    Helper.testChildCount(sut, 'errorWrap', 0)
-    Helper.testButtonIsDisabled(sut, 'submit')
-    Helper.testStatusForField(sut, 'email', validationError)
-    Helper.testStatusForField(sut, 'password', validationError)
+    MakeSut({ validationError })
+    Helper.testChildCount('errorWrap', 0)
+    Helper.testButtonIsDisabled('submit')
+    Helper.testStatusForField('email', validationError)
+    Helper.testStatusForField('password', validationError)
   })
 
   test('Should show email error if Validation fails', () => {
     const validationError = faker.random.words()
-    const { sut } = MakeSut({ validationError })
-    Helper.populateField(sut, 'email')
-    Helper.testStatusForField(sut, 'email', validationError)
+    MakeSut({ validationError })
+    Helper.populateField('email')
+    Helper.testStatusForField('email', validationError)
   })
 
   test('Should show password error if Validation fails', () => {
     const validationError = faker.random.words()
-    const { sut } = MakeSut({ validationError })
-    Helper.populateField(sut, 'password')
-    Helper.testStatusForField(sut, 'password', validationError)
+    MakeSut({ validationError })
+    Helper.populateField('password')
+    Helper.testStatusForField('password', validationError)
   })
 
   test('Should show valid status if email Validation succeeds', () => {
-    const { sut } = MakeSut()
-    Helper.populateField(sut, 'email')
-    Helper.testStatusForField(sut, 'email')
+    MakeSut()
+    Helper.populateField('email')
+    Helper.testStatusForField('email')
   })
 
   test('Should show valid status if password Validation succeeds', () => {
-    const { sut } = MakeSut()
-    Helper.populateField(sut, 'password')
-    Helper.testStatusForField(sut, 'password')
+    MakeSut()
+    Helper.populateField('password')
+    Helper.testStatusForField('password')
   })
 
   test('Should enable submit button if form is valid', () => {
-    const { sut } = MakeSut()
-    Helper.populateField(sut, 'email')
-    Helper.populateField(sut, 'password')
-    Helper.testButtonIsDisabled(sut, 'submit', false)
+    MakeSut()
+    Helper.populateField('email')
+    Helper.populateField('password')
+    Helper.testButtonIsDisabled('submit', false)
   })
 
   test('Should show spinner on submit', async () => {
     const { sut } = MakeSut()
     await simulateValidSubmit(sut)
-    Helper.testElementExist(sut, 'spinner')
+    Helper.testElementExist('spinner')
   })
 
   test('Should call Authentication with correct values', async () => {
@@ -127,8 +127,8 @@ describe('Login Component', () => {
     const error = new InvalidCredentialsError()
     jest.spyOn(authenticationSpy, 'auth').mockReturnValueOnce(Promise.reject(error))
     await simulateValidSubmit(sut)
-    await Helper.testElementText(sut, 'main-error', error.message)
-    Helper.testChildCount(sut, 'errorWrap', 1)
+    await Helper.testElementText('main-error', error.message)
+    Helper.testChildCount('errorWrap', 1)
   })
 
   test('Should call SaveAccessToken with correct params on success', async () => {
@@ -144,8 +144,8 @@ describe('Login Component', () => {
     const error = new InvalidCredentialsError()
     jest.spyOn(saveAccessTokenMock, 'save').mockReturnValueOnce(Promise.reject(error))
     await act(async () => await simulateValidSubmit(sut))
-    await Helper.testElementText(sut, 'main-error', error.message)
-    Helper.testChildCount(sut, 'errorWrap', 1)
+    await Helper.testElementText('main-error', error.message)
+    Helper.testChildCount('errorWrap', 1)
   })
 
   test('Should navigate to /signup', () => {

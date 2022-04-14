@@ -1,34 +1,34 @@
 import faker from '@faker-js/faker'
-import { fireEvent, RenderResult, screen } from '@testing-library/react'
+import { fireEvent, screen } from '@testing-library/react'
 
-export const testChildCount = (sut: RenderResult, fieldName: string, count: number): void => {
-  const element = sut.getByTestId(fieldName)
+export const testChildCount = (fieldName: string, count: number): void => {
+  const element = screen.getByTestId(fieldName)
   expect(element.childElementCount).toBe(count)
 }
 
-export const testButtonIsDisabled = (sut: RenderResult, buttonId: string, expected = true): void => {
+export const testButtonIsDisabled = (buttonId: string, expected = true): void => {
   // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
   const button = screen.getByTestId(buttonId) as HTMLButtonElement
   expect(button.disabled).toBe(expected)
 }
 
-export const testStatusForField = (sut: RenderResult, fieldName: string, validationError?: string): void => {
-  const fieldStatus = sut.getByTestId(`${fieldName}-status`)
+export const testStatusForField = (fieldName: string, validationError?: string): void => {
+  const fieldStatus = screen.getByTestId(`${fieldName}-status`)
   expect(fieldStatus.title).toBe(validationError || 'Tudo certo!')
   expect(fieldStatus.textContent).toBe(validationError ? '🔴' : '🟢')
 }
 
-export const populateField = (sut: RenderResult, fieldName: string, value = faker.random.word()): void => {
-  const fieldInput = sut.getByTestId(fieldName)
+export const populateField = (fieldName: string, value = faker.random.word()): void => {
+  const fieldInput = screen.getByTestId(fieldName)
   fireEvent.input(fieldInput, { target: { value } })
 }
 
-export const testElementExist = (sut: RenderResult, fieldname: string): void => {
-  const element = sut.getByTestId(fieldname)
+export const testElementExist = (fieldname: string): void => {
+  const element = screen.getByTestId(fieldname)
   expect(element).toBeTruthy()
 }
 
-export const testElementText = async (sut: RenderResult, fieldname: string, text: string): Promise<void> => {
-  const { textContent } = await sut.findByTestId(fieldname) // findByTestId is async
+export const testElementText = async (fieldname: string, text: string): Promise<void> => {
+  const { textContent } = await screen.findByTestId(fieldname) // findByTestId is async
   expect(textContent).toBe(text)
 }
