@@ -42,11 +42,6 @@ const simulateValidSubmit = async (sut: RenderResult, email = faker.internet.ema
   await waitFor(() => form)
 }
 
-const testElementText = async (sut: RenderResult, fieldname: string, text: string): Promise<void> => {
-  const { textContent } = await sut.findByTestId(fieldname) // findByTestId is async
-  expect(textContent).toBe(text)
-}
-
 // pay attention to write it at the top level of your file
 const mockedUsedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
@@ -132,7 +127,7 @@ describe('Login Component', () => {
     const error = new InvalidCredentialsError()
     jest.spyOn(authenticationSpy, 'auth').mockReturnValueOnce(Promise.reject(error))
     await simulateValidSubmit(sut)
-    await testElementText(sut, 'main-error', error.message)
+    await Helper.testElementText(sut, 'main-error', error.message)
     Helper.testChildCount(sut, 'errorWrap', 1)
   })
 
@@ -149,7 +144,7 @@ describe('Login Component', () => {
     const error = new InvalidCredentialsError()
     jest.spyOn(saveAccessTokenMock, 'save').mockReturnValueOnce(Promise.reject(error))
     await act(async () => await simulateValidSubmit(sut))
-    await testElementText(sut, 'main-error', error.message)
+    await Helper.testElementText(sut, 'main-error', error.message)
     Helper.testChildCount(sut, 'errorWrap', 1)
   })
 
