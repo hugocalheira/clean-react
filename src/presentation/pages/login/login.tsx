@@ -71,7 +71,7 @@ const Login: React.FC<Props> = ({ validation, authentication, saveAccessToken }:
               <button data-testid='submitButton' type='submit'
               disabled={!!state.emailError || !!state.passwordError }
               >Entrar</button>
-              <span onClick={() => navigate('/signup')} data-testid='signup' className={Styles.link}>Criar conta</span>
+              <span onClick={() => navigate('/signup')} data-testid='signup-link' className={Styles.link}>Criar conta</span>
               <FormStatus />
           </form>
         </Context.Provider>

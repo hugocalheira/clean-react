@@ -150,7 +150,7 @@ describe('Login Component', () => {
 
   test('Should navigate to /signup', () => {
     const { sut } = MakeSut()
-    const signup = sut.getByTestId('signup')
+    const signup = sut.getByTestId('signup-link')
     fireEvent.click(signup)
     expect(mockedUsedNavigate).toHaveBeenCalledWith('/signup')
   })

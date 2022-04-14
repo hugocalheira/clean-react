@@ -80,7 +80,7 @@ const SignUp: React.FC<Props> = ({ validation, addAccount, saveAccessToken }: Pr
               <Input type='password' name='password' placeholder='Digite sua senha'/>
               <Input type='password' name='passwordConfirmation' placeholder='Confirme sua senha'/>
               <button type='submit' disabled={isButtonDisabled()}>Entrar</button>
-              <span data-testid='login' onClick={() => navigate('/login')} className={Styles.link}>Voltar para Login</span>
+              <span data-testid='login-link' onClick={() => navigate('/login')} className={Styles.link}>Voltar para Login</span>
               <FormStatus />
           </form>
         </Context.Provider>
