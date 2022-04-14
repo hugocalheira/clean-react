@@ -2,13 +2,14 @@ import React from 'react'
 import { cleanup, fireEvent, render, RenderResult, waitFor } from '@testing-library/react'
 import SignUp from './signup'
 import { BrowserRouter } from 'react-router-dom'
-import { AddAccountSpy, Helper, ValidationStub } from '@/presentation/test'
+import { AddAccountSpy, Helper, SaveAccessTokenMock, ValidationStub } from '@/presentation/test'
 import faker from '@faker-js/faker'
 import { EmailInUseError } from '@/domain/errors'
 
 type SutTypes = {
   sut: RenderResult
   addAccountSpy: AddAccountSpy
+  saveAccessTokenMock: SaveAccessTokenMock
 }
 
 type SutParams = {
@@ -19,15 +20,17 @@ const MakeSut = (params?: SutParams): SutTypes => {
   const validationStub = new ValidationStub()
   const addAccountSpy = new AddAccountSpy()
   validationStub.errorMessage = params?.validationError
+  const saveAccessTokenMock = new SaveAccessTokenMock()
   const sut = render(
     <BrowserRouter>
         <SignUp
             validation={validationStub}
             addAccount={addAccountSpy}
+            saveAccessToken={saveAccessTokenMock}
         />
     </BrowserRouter>
   )
-  return { sut, addAccountSpy }
+  return { sut, addAccountSpy, saveAccessTokenMock }
 }
 
 const simulateValidSubmit = async (sut: RenderResult, name = faker.name.findName(), email = faker.internet.email(), password = faker.internet.password()): Promise<void> => {
@@ -39,6 +42,14 @@ const simulateValidSubmit = async (sut: RenderResult, name = faker.name.findName
   fireEvent.submit(form)
   await waitFor(() => form)
 }
+
+// pay attention to write it at the top level of your file
+const mockedUsedNavigate = jest.fn()
+jest.mock('react-router-dom', () => ({
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+  ...jest.requireActual('react-router-dom') as any,
+  useNavigate: () => mockedUsedNavigate
+}))
 
 describe('SignUp Component', () => {
   afterEach(cleanup)
@@ -156,5 +167,14 @@ describe('SignUp Component', () => {
     await simulateValidSubmit(sut)
     await Helper.testElementText(sut, 'main-error', error.message)
     Helper.testChildCount(sut, 'errorWrap', 1)
+  })
+
+  test('Should call SaveAccessToken with correct params on success', async () => {
+    const { sut, addAccountSpy, saveAccessTokenMock } = MakeSut()
+    await simulateValidSubmit(sut)
+    expect(saveAccessTokenMock.accessToken)
+      .toBe(addAccountSpy.account.accessToken)
+    expect(mockedUsedNavigate)
+      .toHaveBeenCalledWith('/', { replace: true })
   })
 })
