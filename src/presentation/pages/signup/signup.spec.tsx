@@ -152,7 +152,7 @@ describe('SignUp Component', () => {
   test('Should present error if AddAccount fails', async () => {
     const { sut, addAccountSpy } = MakeSut()
     const error = new EmailInUseError()
-    jest.spyOn(addAccountSpy, 'add').mockReturnValueOnce(Promise.reject(error))
+    jest.spyOn(addAccountSpy, 'add').mockRejectedValueOnce(error)
     await simulateValidSubmit(sut)
     await Helper.testElementText(sut, 'main-error', error.message)
     Helper.testChildCount(sut, 'errorWrap', 1)
