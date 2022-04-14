@@ -4,6 +4,7 @@ import SignUp from './signup'
 import { BrowserRouter } from 'react-router-dom'
 import { AddAccountSpy, Helper, ValidationStub } from '@/presentation/test'
 import faker from '@faker-js/faker'
+import { EmailInUseError } from '@/domain/errors'
 
 type SutTypes = {
   sut: RenderResult
@@ -146,5 +147,14 @@ describe('SignUp Component', () => {
     const { sut: sutWithValidationError, addAccountSpy } = MakeSut({ validationError })
     await simulateValidSubmit(sutWithValidationError)
     expect(addAccountSpy.callsCount).toBe(0)
+  })
+
+  test('Should present error if AddAccount fails', async () => {
+    const { sut, addAccountSpy } = MakeSut()
+    const error = new EmailInUseError()
+    jest.spyOn(addAccountSpy, 'add').mockReturnValueOnce(Promise.reject(error))
+    await simulateValidSubmit(sut)
+    await Helper.testElementText(sut, 'main-error', error.message)
+    Helper.testChildCount(sut, 'errorWrap', 1)
   })
 })
