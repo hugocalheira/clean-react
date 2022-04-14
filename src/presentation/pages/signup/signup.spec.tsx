@@ -186,4 +186,11 @@ describe('SignUp Component', () => {
     await Helper.testElementText(sut, 'main-error', error.message)
     Helper.testChildCount(sut, 'errorWrap', 1)
   })
+
+  test('Should navigate to /login', () => {
+    const { sut } = MakeSut()
+    const login = sut.getByTestId('login')
+    fireEvent.click(login)
+    expect(mockedUsedNavigate).toHaveBeenCalledWith('/login')
+  })
 })
