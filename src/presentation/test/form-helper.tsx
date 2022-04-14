@@ -26,3 +26,8 @@ export const testElementExist = (sut: RenderResult, fieldname: string): void => 
   const element = sut.getByTestId(fieldname)
   expect(element).toBeTruthy()
 }
+
+export const testElementText = async (sut: RenderResult, fieldname: string, text: string): Promise<void> => {
+  const { textContent } = await sut.findByTestId(fieldname) // findByTestId is async
+  expect(textContent).toBe(text)
+}

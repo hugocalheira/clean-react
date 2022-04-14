@@ -54,7 +54,16 @@ const SignUp: React.FC<Props> = ({ validation, addAccount }: Props) => {
     }
 
     setState({ ...state, isLoading: true })
-    await addAccount.add({ name, email, password, passwordConfirmation })
+
+    try {
+      await addAccount.add({ name, email, password, passwordConfirmation })
+    } catch (err) {
+      setState({
+        ...state,
+        isLoading: false,
+        mainError: err.message
+      })
+    }
   }
 
   return (
