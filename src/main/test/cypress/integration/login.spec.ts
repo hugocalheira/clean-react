@@ -4,6 +4,21 @@ const { baseUrl } = Cypress.config()
 const VALID_PASSWORD_LENGTH = 5
 const INVALID_PASSWORD_LENGTH = VALID_PASSWORD_LENGTH - 1
 
+const testFieldState = (fieldId: string, title: string, isValid=false) => {
+    cy.getByTestId(fieldId)
+    .should('have.attr', 'title', title)
+    .should('contain.text', isValid ? '🟢' : '🔴')
+}
+
+const testFormValidity = (isValid = false) => {
+    cy.getByTestId('submit').should(isValid ? 'not.have.attr' : 'have.attr', 'disabled')
+    cy.getByTestId('errorWrap').should('not.have.descendants')
+}
+
+const populateField = (fieldId: string, value: string) => {
+    cy.getByTestId(fieldId).focus().type(value)
+}
+
 describe('Login', () => {
     beforeEach(() => {
         cy.visit('login')
@@ -11,46 +26,31 @@ describe('Login', () => {
 
     it('Should load with correct initial state', () => {
         cy.getByTestId('email').should('have.attr', 'readOnly')
-        cy.getByTestId('password').should('have.attr', 'readOnly')
-        cy.getByTestId('email-status')
-            .should('have.attr', 'title', 'Campo obrigatório')
-            .should('contain.text', '🔴')
-        cy.getByTestId('password-status')
-            .should('have.attr', 'title', 'Campo obrigatório')
-            .should('contain.text', '🔴')
-        cy.getByTestId('submit').should('have.attr', 'disabled')
-        cy.getByTestId('errorWrap').should('not.have.descendants')
+        cy.getByTestId('password').should('have.attr', 'readOnly')            
+        testFieldState('email-status', 'Campo obrigatório')
+        testFieldState('password-status', 'Campo obrigatório')
+        testFormValidity()
     })
 
     it('Should present error state if form is invalid', () => {
-        cy.getByTestId('email').focus().type(faker.random.word())
-        cy.getByTestId('email-status')
-            .should('have.attr', 'title', 'Valor inválido')
-            .should('contain.text', '🔴')
-        cy.getByTestId('password').focus().type(faker.random.alphaNumeric(INVALID_PASSWORD_LENGTH))
-        cy.getByTestId('password-status')
-            .should('have.attr', 'title', 'Valor inválido')
-            .should('contain.text', '🔴')
-        cy.getByTestId('submit').should('have.attr', 'disabled')
-        cy.getByTestId('errorWrap').should('not.have.descendants')
+        populateField('email', faker.random.word())
+        testFieldState('email-status', 'Valor inválido')
+        populateField('password', faker.random.alphaNumeric(INVALID_PASSWORD_LENGTH))
+        testFieldState('password-status', 'Valor inválido')
+        testFormValidity()
     })
 
     it('Should present valid state if form is valid', () => {
-        cy.getByTestId('email').focus().type(faker.internet.email())
-        cy.getByTestId('email-status')
-            .should('have.attr', 'title', 'Tudo certo!')
-            .should('contain.text', '🟢')
-        cy.getByTestId('password').focus().type(faker.random.alphaNumeric(VALID_PASSWORD_LENGTH))
-        cy.getByTestId('password-status')
-        .should('have.attr', 'title', 'Tudo certo!')
-        .should('contain.text', '🟢')
-        cy.getByTestId('submit').should('not.have.attr', 'disabled')
-        cy.getByTestId('errorWrap').should('not.have.descendants')
+        populateField('email', faker.internet.email())
+        testFieldState('email-status', 'Tudo certo!', true)
+        populateField('password', faker.random.alphaNumeric(VALID_PASSWORD_LENGTH))
+        testFieldState('password-status', 'Tudo certo!', true)
+        testFormValidity(true)
     })
 
     it('Should present error if invalid credentials are provided', () => {
-        cy.getByTestId('email').focus().type(faker.internet.email())
-        cy.getByTestId('password').focus().type(faker.random.alphaNumeric(VALID_PASSWORD_LENGTH))        
+        populateField('email', faker.internet.email())
+        populateField('password', faker.random.alphaNumeric(VALID_PASSWORD_LENGTH))       
         cy.getByTestId('submit').click()
         cy.getByTestId('errorWrap')
             .getByTestId('spinner')
@@ -66,8 +66,8 @@ describe('Login', () => {
     })
 
     it('Should save accessToken if valid credentials are provided', () => {
-        cy.getByTestId('email').focus().type('mango@gmail.com')
-        cy.getByTestId('password').focus().type('12345')        
+        populateField('email', 'mango@gmail.com')
+        populateField('password', '12345')    
         cy.getByTestId('submit').click()
         cy.getByTestId('errorWrap')
             .getByTestId('spinner')
