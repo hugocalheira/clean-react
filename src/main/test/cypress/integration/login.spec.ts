@@ -5,9 +5,11 @@ const VALID_PASSWORD_LENGTH = 5
 const INVALID_PASSWORD_LENGTH = VALID_PASSWORD_LENGTH - 1
 
 const testFieldState = (fieldId: string, title: string, isValid = false): void => {
+  cy.getByTestId(`${fieldId}-wrap`)
+    .should('have.attr', 'data-status', isValid ? 'valid' : 'invalid')
   cy.getByTestId(fieldId)
-    .should('have.attr', 'title', title)
-    .should('contain.text', isValid ? '🟢' : '🔴')
+    .should(isValid ? 'not.have.attr' : 'have.attr', 'title', title)
+    // .should('contain.text', isValid ? '🟢' : '🔴')
 }
 
 const testFormValidity = (isValid = false): void => {
@@ -27,24 +29,24 @@ describe('Login', () => {
   it('Should load with correct initial state', () => {
     cy.getByTestId('email').should('have.attr', 'readOnly')
     cy.getByTestId('password').should('have.attr', 'readOnly')
-    testFieldState('email-status', 'Campo obrigatório')
-    testFieldState('password-status', 'Campo obrigatório')
+    testFieldState('email', 'Campo obrigatório')
+    testFieldState('password', 'Campo obrigatório')
     testFormValidity()
   })
 
   it('Should present error state if form is invalid', () => {
     populateField('email', faker.random.word())
-    testFieldState('email-status', 'Valor inválido')
+    testFieldState('email', 'Valor inválido')
     populateField('password', faker.random.alphaNumeric(INVALID_PASSWORD_LENGTH))
-    testFieldState('password-status', 'Valor inválido')
+    testFieldState('password', 'Valor inválido')
     testFormValidity()
   })
 
   it('Should present valid state if form is valid', () => {
     populateField('email', faker.internet.email())
-    testFieldState('email-status', 'Tudo certo!', true)
+    testFieldState('email', '', true)
     populateField('password', faker.random.alphaNumeric(VALID_PASSWORD_LENGTH))
-    testFieldState('password-status', 'Tudo certo!', true)
+    testFieldState('password', '', true)
     testFormValidity(true)
   })
 

@@ -16,9 +16,14 @@ const Input: React.FC<Props> = (props: Props) => {
   }
 
   return (
-    <div className={Styles.inputWrap}>
+    <div
+      data-testid={`${props.name}-wrap`}
+      className={Styles.inputWrap}
+      data-status={ error ? 'invalid' : 'valid'}
+    >
         <input
           {...props}
+          title={error}
           placeholder={' '}
           data-testid={props.name}
           autoComplete='off'
@@ -27,11 +32,6 @@ const Input: React.FC<Props> = (props: Props) => {
           onChange={handleChange}
         />
         <label>{props.placeholder}</label>
-        <span
-          title={error || 'Tudo certo!'}
-          data-testid={`${props.name}-status`}
-          className={Styles.status}
-        >{error ? '🔴' : '🟢'}</span>
     </div>
   )
 }
