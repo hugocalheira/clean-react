@@ -139,4 +139,19 @@ describe('Login', () => {
     cy.getByTestId('submit').dblclick()
     cy.get('@request.all').should('have.length', 1)
   })
+
+  it('Should submit using [Enter] key', () => {
+    cy.intercept('POST', /login/, {
+      statusCode: 200,
+      body: {
+        accessToken: faker.datatype.uuid(),
+        name: faker.name.findName()
+      }
+    }).as('request')
+
+    populateField('email', faker.internet.email())
+    populateField('password', faker.random.alphaNumeric(VALID_PASSWORD_LENGTH))
+    cy.getByTestId('password').type('{enter}')
+    cy.get('@request.all').should('have.length', 1)
+  })
 })
