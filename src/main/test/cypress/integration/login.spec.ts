@@ -124,4 +124,19 @@ describe('Login', () => {
       assert.isNull(savedAccessToken)
     })
   })
+
+  it('Should prevent multiples submits', () => {
+    cy.intercept('POST', /login/, {
+      statusCode: 200,
+      body: {
+        accessToken: faker.datatype.uuid(),
+        name: faker.name.findName()
+      }
+    }).as('request')
+
+    populateField('email', faker.internet.email())
+    populateField('password', faker.random.alphaNumeric(VALID_PASSWORD_LENGTH))
+    cy.getByTestId('submit').dblclick()
+    cy.get('@request.all').should('have.length', 1)
+  })
 })
