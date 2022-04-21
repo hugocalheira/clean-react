@@ -48,7 +48,7 @@ describe('Login', () => {
     testFormValidity(true)
   })
 
-  it('Should present error if invalid credentials are provided', () => {
+  it('Should present InvalidCredentialsError on 401', () => {
     cy.intercept('POST', /login/, {
       statusCode: 401,
       body: { error: faker.random.words() }
@@ -60,6 +60,21 @@ describe('Login', () => {
     cy.getByTestId('spinner').should('not.exist')
     cy.getByTestId('main-error').should('exist')
       .should('contain.text', 'Credenciais inválidas')
+    cy.url().should('eq', `${baseUrl}/login`)
+  })
+
+  it('Should present UnexpectedError on 400', () => {
+    cy.intercept('POST', /login/, {
+      statusCode: 400,
+      body: { error: faker.random.words() }
+    })
+
+    populateField('email', faker.internet.email())
+    populateField('password', faker.random.alphaNumeric(VALID_PASSWORD_LENGTH))
+    cy.getByTestId('submit').click()
+    cy.getByTestId('spinner').should('not.exist')
+    cy.getByTestId('main-error').should('exist')
+      .should('contain.text', 'Algo de errado aconteceu. Tente novamente em breve.')
     cy.url().should('eq', `${baseUrl}/login`)
   })
 
