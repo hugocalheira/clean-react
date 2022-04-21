@@ -9,35 +9,29 @@ const Input: React.FC<Props> = (props: Props) => {
   const { state, setState } = useContext(Context)
   const error = state[`${props.name}Error`]
 
-  function enableInput (event: React.FocusEvent<HTMLInputElement>): void {
-    event.target.readOnly = false
-  }
-
   function handleChange (e: React.FocusEvent<HTMLInputElement>): void {
     setState(oldState => (
       { ...oldState, [props.name]: e.target.value }
     ))
   }
 
-  const getTitle = (): string => error || 'Tudo certo!'
-
-  const getStatus = (): string => error ? '🔴' : '🟢'
-
   return (
     <div className={Styles.inputWrap}>
         <input
           {...props}
+          placeholder={' '}
           data-testid={props.name}
           autoComplete='off'
           readOnly
-          onFocus={enableInput}
+          onFocus={e => { e.target.readOnly = false }}
           onChange={handleChange}
         />
+        <label>{props.placeholder}</label>
         <span
-          title={getTitle()}
+          title={error || 'Tudo certo!'}
           data-testid={`${props.name}-status`}
           className={Styles.status}
-        >{getStatus()}</span>
+        >{error ? '🔴' : '🟢'}</span>
     </div>
   )
 }
