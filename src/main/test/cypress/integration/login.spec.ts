@@ -49,33 +49,41 @@ describe('Login', () => {
   })
 
   it('Should present error if invalid credentials are provided', () => {
+    cy.intercept('POST', /login/, {
+      statusCode: 401,
+      body: { error: faker.random.words() }
+    })
+
     populateField('email', faker.internet.email())
     populateField('password', faker.random.alphaNumeric(VALID_PASSWORD_LENGTH))
     cy.getByTestId('submit').click()
-    cy.getByTestId('errorWrap')
-      .getByTestId('spinner')
-      .should('exist')
-      .getByTestId('main-error')
-      .should('not.exist')
-      .getByTestId('spinner')
-      .should('not.exist')
-      .getByTestId('main-error')
-      .should('exist')
+    cy.getByTestId('spinner').should('not.exist')
+    cy.getByTestId('main-error').should('exist')
       .should('contain.text', 'Credenciais inválidas')
     cy.url().should('eq', `${baseUrl}/login`)
   })
 
   it('Should save accessToken if valid credentials are provided', () => {
-    populateField('email', 'mango@gmail.com')
-    populateField('password', '12345')
+    const accessToken = faker.datatype.uuid()
+    cy.intercept('POST', /login/, {
+      statusCode: 200,
+      body: {
+        accessToken,
+        name: faker.name.findName()
+      }
+    })
+
+    populateField('email', faker.internet.email())
+    populateField('password', faker.random.alphaNumeric(VALID_PASSWORD_LENGTH))
     cy.getByTestId('submit').click()
-    cy.getByTestId('errorWrap')
-      .getByTestId('spinner')
-      .should('exist')
-      .getByTestId('main-error')
-      .should('not.exist')
+    cy.getByTestId('spinner').should('not.exist')
+    cy.getByTestId('main-error').should('not.exist')
 
     cy.url().should('eq', `${baseUrl}/`)
-    cy.window().then(window => assert.isOk(window.localStorage.getItem('accessToken')))
+    cy.window().then(window => {
+      const savedAccessToken = window.localStorage.getItem('accessToken')
+      assert.isOk(savedAccessToken)
+      assert.equal(savedAccessToken, accessToken)
+    })
   })
 })
