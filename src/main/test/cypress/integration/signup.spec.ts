@@ -74,4 +74,13 @@ describe('SignUp', () => {
     FormHelper.testUrl('/signup')
     FormHelper.testLocalStorageItem('accessToken')
   })
+
+  it('Should save accessToken in localStorage on success', () => {
+    const accessToken = faker.datatype.uuid()
+    Http.mockOk({ accessToken })
+    simulateValidSubmit()
+    FormHelper.testMainError()
+    FormHelper.testUrl('/')
+    FormHelper.testLocalStorageItem('accessToken', accessToken)
+  })
 })
