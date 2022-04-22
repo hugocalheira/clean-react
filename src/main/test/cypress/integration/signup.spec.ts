@@ -97,4 +97,13 @@ describe('SignUp', () => {
     cy.getByTestId('passwordConfirmation').type('{enter}')
     FormHelper.testHttpCallsCount(1)
   })
+
+  it('Should not call submit if form is invalid', () => {
+    Http.mockOk()
+    populateFields()
+    FormHelper.populateField('passwordConfirmation', faker.random.alphaNumeric(VALID_PASSWORD_LENGTH))
+    cy.getByTestId('passwordConfirmation').type('{enter}')
+    FormHelper.testHttpCallsCount(0)
+    FormHelper.testUrl('/signup')
+  })
 })
