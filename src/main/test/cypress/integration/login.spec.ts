@@ -23,8 +23,7 @@ describe('Login', () => {
   })
 
   it('Should load with correct initial state', () => {
-    cy.getByTestId('email').should('have.attr', 'readOnly')
-    cy.getByTestId('password').should('have.attr', 'readOnly')
+    FormHelper.testFieldsHaveAttr(['email', 'password'], 'readOnly')
     FormHelper.testInputStatus('email', 'Campo obrigatório')
     FormHelper.testInputStatus('password', 'Campo obrigatório')
     FormHelper.testFormValidity(false)

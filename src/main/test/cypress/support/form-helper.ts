@@ -40,3 +40,7 @@ export const testFormValidity = (isValid = true): void => {
   cy.getByTestId('submit').should(isValid ? 'not.have.attr' : 'have.attr', 'disabled')
   cy.getByTestId('errorWrap').should('not.have.descendants')
 }
+
+export const testFieldsHaveAttr = (fields: string[], attr: string): void => {
+  fields.forEach(field => cy.getByTestId(field).should('have.attr', attr))
+}

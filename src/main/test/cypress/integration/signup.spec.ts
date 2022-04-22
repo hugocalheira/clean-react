@@ -18,10 +18,7 @@ describe('SignUp', () => {
   })
 
   it('Should load with correct initial state', () => {
-    cy.getByTestId('name').should('have.attr', 'readOnly')
-    cy.getByTestId('email').should('have.attr', 'readOnly')
-    cy.getByTestId('password').should('have.attr', 'readOnly')
-    cy.getByTestId('passwordConfirmation').should('have.attr', 'readOnly')
+    FormHelper.testFieldsHaveAttr(['name', 'email', 'password', 'passwordConfirmation'], 'readOnly')
     FormHelper.testInputStatus('name', 'Campo obrigatório')
     FormHelper.testInputStatus('email', 'Campo obrigatório')
     FormHelper.testInputStatus('password', 'Campo obrigatório')
