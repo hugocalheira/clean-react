@@ -1,6 +1,6 @@
 import faker from '@faker-js/faker'
 import * as FormHelper from '../support/form-helper'
-import * as Http from './login-mocks'
+import * as Http from '../support/login-mocks'
 
 const VALID_PASSWORD_LENGTH = 5
 const INVALID_PASSWORD_LENGTH = VALID_PASSWORD_LENGTH - 1
