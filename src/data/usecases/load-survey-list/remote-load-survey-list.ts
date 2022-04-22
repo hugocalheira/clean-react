@@ -5,7 +5,7 @@ import { SurveyModel } from '@/domain/models'
 export class RemoteLoadSurveyList {
   constructor (
     private readonly url: string,
-    private readonly httpGetClient: HttpGetClient
+    private readonly httpGetClient: HttpGetClient<SurveyModel[]>
   ) {}
 
   loadAll = async (): Promise<SurveyModel[]> => {
