@@ -4,6 +4,14 @@ import faker from '@faker-js/faker'
 const VALID_PASSWORD_LENGTH = 5
 const INVALID_PASSWORD_LENGTH = VALID_PASSWORD_LENGTH - 1
 
+const populateFormValid = (): void => {
+  const password = faker.random.alphaNumeric(VALID_PASSWORD_LENGTH)
+  FormHelper.populateField('name', faker.name.findName())
+  FormHelper.populateField('email', faker.internet.email())
+  FormHelper.populateField('password', password)
+  FormHelper.populateField('passwordConfirmation', password)
+}
+
 describe('SignUp', () => {
   beforeEach(() => {
     cy.visit('signup')
@@ -29,5 +37,14 @@ describe('SignUp', () => {
     FormHelper.testInputStatus('password', 'Valor inválido')
     FormHelper.testInputStatus('passwordConfirmation', 'Valor inválido')
     FormHelper.testFormValidity(false)
+  })
+
+  it('Should present valid state if form is valid', () => {
+    populateFormValid()
+    FormHelper.testInputStatus('name')
+    FormHelper.testInputStatus('email')
+    FormHelper.testInputStatus('password')
+    FormHelper.testInputStatus('passwordConfirmation')
+    FormHelper.testFormValidity()
   })
 })
