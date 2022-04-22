@@ -4,6 +4,8 @@ import * as Http from '../support/login-mocks'
 
 const VALID_PASSWORD_LENGTH = 5
 const INVALID_PASSWORD_LENGTH = VALID_PASSWORD_LENGTH - 1
+const UNEXPECTED_ERROR_MESSAGE = 'Algo de errado aconteceu. Tente novamente em breve.'
+const INVALID_CREDENTIALS_ERROR_MESSAGE = 'Credenciais inválidas'
 
 const testFormValidity = (isValid = false): void => {
   cy.getByTestId('submit').should(isValid ? 'not.have.attr' : 'have.attr', 'disabled')
@@ -51,14 +53,14 @@ describe('Login', () => {
   it('Should present InvalidCredentialsError on 401', () => {
     Http.mockInvalidCredentialsError()
     simulateValidSubmit()
-    FormHelper.testMainError('Credenciais inválidas')
+    FormHelper.testMainError(INVALID_CREDENTIALS_ERROR_MESSAGE)
     FormHelper.testUrl('/login')
   })
 
   it('Should present UnexpectedError on default error cases', () => {
     Http.mockUnexpectedError()
     simulateValidSubmit()
-    FormHelper.testMainError('Algo de errado aconteceu. Tente novamente em breve.')
+    FormHelper.testMainError(UNEXPECTED_ERROR_MESSAGE)
     FormHelper.testUrl('/login')
   })
 
@@ -74,7 +76,7 @@ describe('Login', () => {
   it('Should present UnexpectedError if invalid data is returned', () => {
     Http.mockInvalidData()
     simulateValidSubmit()
-    FormHelper.testMainError('Algo de errado aconteceu. Tente novamente em breve.')
+    FormHelper.testMainError(UNEXPECTED_ERROR_MESSAGE)
     FormHelper.testUrl('/login')
     FormHelper.testLocalStorageItem('accessToken')
   })
