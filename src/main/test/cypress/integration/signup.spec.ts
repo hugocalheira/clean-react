@@ -83,4 +83,11 @@ describe('SignUp', () => {
     FormHelper.testUrl('/')
     FormHelper.testLocalStorageItem('accessToken', accessToken)
   })
+
+  it('Should prevent multiples submits', () => {
+    Http.mockOk()
+    populateFields()
+    cy.getByTestId('submit').dblclick()
+    FormHelper.testHttpCallsCount(1)
+  })
 })
