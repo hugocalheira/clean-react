@@ -7,12 +7,13 @@ const INVALID_PASSWORD_LENGTH = VALID_PASSWORD_LENGTH - 1
 const INVALID_EMAIL_IN_USE_ERROR_MESSAGE = 'E-mail já existe'
 const UNEXPECTED_ERROR_MESSAGE = 'Algo de errado aconteceu. Tente novamente em breve.'
 
-const populateFields = (): void => {
+const populateFields = (): Cypress.Chainable<Element> => {
   const password = faker.random.alphaNumeric(VALID_PASSWORD_LENGTH)
   FormHelper.populateField('name', faker.name.findName())
   FormHelper.populateField('email', faker.internet.email())
   FormHelper.populateField('password', password)
-  FormHelper.populateField('passwordConfirmation', password)
+  const fieldToChain = FormHelper.populateField('passwordConfirmation', password)
+  return fieldToChain
 }
 
 const simulateValidSubmit = (): void => {
@@ -93,16 +94,14 @@ describe('SignUp', () => {
 
   it('Should submit using [Enter] key', () => {
     Http.mockOk()
-    populateFields()
-    cy.getByTestId('passwordConfirmation').type('{enter}')
+    populateFields().type('{enter}')
     FormHelper.testHttpCallsCount(1)
   })
 
   it('Should not call submit if form is invalid', () => {
     Http.mockOk()
     populateFields()
-    FormHelper.populateField('passwordConfirmation', faker.random.alphaNumeric(VALID_PASSWORD_LENGTH))
-    cy.getByTestId('passwordConfirmation').type('{enter}')
+    FormHelper.populateField('passwordConfirmation', faker.random.alphaNumeric(VALID_PASSWORD_LENGTH)).type('{enter}')
     FormHelper.testHttpCallsCount(0)
     FormHelper.testUrl('/signup')
   })

@@ -15,8 +15,9 @@ export const testHttpCallsCount = (count: number): void => {
   cy.get('@request.all').should('have.length', count)
 }
 
-export const populateField = (fieldId: string, value: string): void => {
+export const populateField = (fieldId: string, value: string): Cypress.Chainable<Element> => {
   cy.getByTestId(fieldId).focus().type(value)
+  return cy.getByTestId(fieldId)
 }
 
 export const testUrl = (url: string): void => {

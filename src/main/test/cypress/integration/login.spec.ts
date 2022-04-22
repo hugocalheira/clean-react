@@ -1,15 +1,16 @@
-import faker from '@faker-js/faker'
 import * as FormHelper from '../support/form-helper'
 import * as Http from '../support/login-mocks'
+import faker from '@faker-js/faker'
 
 const VALID_PASSWORD_LENGTH = 5
 const INVALID_PASSWORD_LENGTH = VALID_PASSWORD_LENGTH - 1
 const UNEXPECTED_ERROR_MESSAGE = 'Algo de errado aconteceu. Tente novamente em breve.'
 const INVALID_CREDENTIALS_ERROR_MESSAGE = 'Credenciais inválidas'
 
-const populateFields = (): void => {
+const populateFields = (): Cypress.Chainable<Element> => {
   FormHelper.populateField('email', faker.internet.email())
-  FormHelper.populateField('password', faker.random.alphaNumeric(VALID_PASSWORD_LENGTH))
+  const fieldToChain = FormHelper.populateField('password', faker.random.alphaNumeric(VALID_PASSWORD_LENGTH))
+  return fieldToChain
 }
 
 const simulateValidSubmit = (): void => {
@@ -84,16 +85,14 @@ describe('Login', () => {
 
   it('Should submit using [Enter] key', () => {
     Http.mockOk()
-    populateFields()
-    cy.getByTestId('password').type('{enter}')
+    populateFields().type('{enter}')
     FormHelper.testHttpCallsCount(1)
   })
 
   it('Should not call submit if form is invalid', () => {
     Http.mockOk()
     FormHelper.populateField('email', faker.random.word())
-    FormHelper.populateField('password', faker.random.alphaNumeric(VALID_PASSWORD_LENGTH))
-    cy.getByTestId('password').type('{enter}')
+    FormHelper.populateField('password', faker.random.alphaNumeric(VALID_PASSWORD_LENGTH)).type('{enter}')
     FormHelper.testHttpCallsCount(0)
   })
 })
