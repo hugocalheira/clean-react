@@ -58,6 +58,14 @@ describe('Login', () => {
     FormHelper.testUrl('/login')
   })
 
+  it('Should present UnexpectedError if invalid data is returned', () => {
+    Http.mockInvalidData()
+    simulateValidSubmit()
+    FormHelper.testMainError(UNEXPECTED_ERROR_MESSAGE)
+    FormHelper.testUrl('/login')
+    FormHelper.testLocalStorageItem('accessToken')
+  })
+
   it('Should save accessToken if valid credentials are provided', () => {
     const accessToken = faker.datatype.uuid()
     Http.mockOk({ accessToken })
@@ -65,14 +73,6 @@ describe('Login', () => {
     FormHelper.testMainError()
     FormHelper.testUrl('/')
     FormHelper.testLocalStorageItem('accessToken', accessToken)
-  })
-
-  it('Should present UnexpectedError if invalid data is returned', () => {
-    Http.mockInvalidData()
-    simulateValidSubmit()
-    FormHelper.testMainError(UNEXPECTED_ERROR_MESSAGE)
-    FormHelper.testUrl('/login')
-    FormHelper.testLocalStorageItem('accessToken')
   })
 
   it('Should prevent multiples submits', () => {

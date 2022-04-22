@@ -66,4 +66,12 @@ describe('SignUp', () => {
     FormHelper.testMainError(UNEXPECTED_ERROR_MESSAGE)
     FormHelper.testUrl('/signup')
   })
+
+  it('Should present UnexpectedError if invalid data is returned', () => {
+    Http.mockInvalidData()
+    simulateValidSubmit()
+    FormHelper.testMainError(UNEXPECTED_ERROR_MESSAGE)
+    FormHelper.testUrl('/signup')
+    FormHelper.testLocalStorageItem('accessToken')
+  })
 })
