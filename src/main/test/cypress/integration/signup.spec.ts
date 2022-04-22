@@ -5,6 +5,7 @@ import faker from '@faker-js/faker'
 const VALID_PASSWORD_LENGTH = 5
 const INVALID_PASSWORD_LENGTH = VALID_PASSWORD_LENGTH - 1
 const INVALID_EMAIL_IN_USE_ERROR_MESSAGE = 'E-mail já existe'
+const UNEXPECTED_ERROR_MESSAGE = 'Algo de errado aconteceu. Tente novamente em breve.'
 
 const populateFormValid = (): void => {
   const password = faker.random.alphaNumeric(VALID_PASSWORD_LENGTH)
@@ -56,6 +57,13 @@ describe('SignUp', () => {
     Http.mockEmailInUseError()
     simulateValidSubmit()
     FormHelper.testMainError(INVALID_EMAIL_IN_USE_ERROR_MESSAGE)
+    FormHelper.testUrl('/signup')
+  })
+
+  it('Should present UnexpectedError on default error cases', () => {
+    Http.mockUnexpectedError()
+    simulateValidSubmit()
+    FormHelper.testMainError(UNEXPECTED_ERROR_MESSAGE)
     FormHelper.testUrl('/signup')
   })
 })
