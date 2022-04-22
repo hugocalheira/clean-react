@@ -1,10 +1,5 @@
 import * as FormHelper from '../support/form-helper'
 
-const testFormValidity = (isValid = false): void => {
-  cy.getByTestId('submit').should(isValid ? 'not.have.attr' : 'have.attr', 'disabled')
-  cy.getByTestId('errorWrap').should('not.have.descendants')
-}
-
 describe('SignUp', () => {
   beforeEach(() => {
     cy.visit('signup')
@@ -19,6 +14,6 @@ describe('SignUp', () => {
     FormHelper.testInputStatus('email', 'Campo obrigatório')
     FormHelper.testInputStatus('password', 'Campo obrigatório')
     FormHelper.testInputStatus('passwordConfirmation', 'Campo obrigatório')
-    testFormValidity()
+    FormHelper.testFormValidity(false)
   })
 })

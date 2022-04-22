@@ -7,11 +7,6 @@ const INVALID_PASSWORD_LENGTH = VALID_PASSWORD_LENGTH - 1
 const UNEXPECTED_ERROR_MESSAGE = 'Algo de errado aconteceu. Tente novamente em breve.'
 const INVALID_CREDENTIALS_ERROR_MESSAGE = 'Credenciais inválidas'
 
-const testFormValidity = (isValid = false): void => {
-  cy.getByTestId('submit').should(isValid ? 'not.have.attr' : 'have.attr', 'disabled')
-  cy.getByTestId('errorWrap').should('not.have.descendants')
-}
-
 const populateFormValid = (): void => {
   FormHelper.populateField('email', faker.internet.email())
   FormHelper.populateField('password', faker.random.alphaNumeric(VALID_PASSWORD_LENGTH))
@@ -32,7 +27,7 @@ describe('Login', () => {
     cy.getByTestId('password').should('have.attr', 'readOnly')
     FormHelper.testInputStatus('email', 'Campo obrigatório')
     FormHelper.testInputStatus('password', 'Campo obrigatório')
-    testFormValidity()
+    FormHelper.testFormValidity(false)
   })
 
   it('Should present error state if form is invalid', () => {
@@ -40,14 +35,14 @@ describe('Login', () => {
     FormHelper.populateField('password', faker.random.alphaNumeric(INVALID_PASSWORD_LENGTH))
     FormHelper.testInputStatus('email', 'Valor inválido')
     FormHelper.testInputStatus('password', 'Valor inválido')
-    testFormValidity()
+    FormHelper.testFormValidity(false)
   })
 
   it('Should present valid state if form is valid', () => {
     populateFormValid()
     FormHelper.testInputStatus('email')
     FormHelper.testInputStatus('password')
-    testFormValidity(true)
+    FormHelper.testFormValidity()
   })
 
   it('Should present InvalidCredentialsError on 401', () => {
