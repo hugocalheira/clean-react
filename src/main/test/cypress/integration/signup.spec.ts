@@ -90,4 +90,11 @@ describe('SignUp', () => {
     cy.getByTestId('submit').dblclick()
     FormHelper.testHttpCallsCount(1)
   })
+
+  it('Should submit using [Enter] key', () => {
+    Http.mockOk()
+    populateFields()
+    cy.getByTestId('passwordConfirmation').type('{enter}')
+    FormHelper.testHttpCallsCount(1)
+  })
 })
