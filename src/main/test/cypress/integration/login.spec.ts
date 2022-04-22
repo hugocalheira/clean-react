@@ -7,13 +7,13 @@ const INVALID_PASSWORD_LENGTH = VALID_PASSWORD_LENGTH - 1
 const UNEXPECTED_ERROR_MESSAGE = 'Algo de errado aconteceu. Tente novamente em breve.'
 const INVALID_CREDENTIALS_ERROR_MESSAGE = 'Credenciais inválidas'
 
-const populateFormValid = (): void => {
+const populateFields = (): void => {
   FormHelper.populateField('email', faker.internet.email())
   FormHelper.populateField('password', faker.random.alphaNumeric(VALID_PASSWORD_LENGTH))
 }
 
 const simulateValidSubmit = (): void => {
-  populateFormValid()
+  populateFields()
   cy.getByTestId('submit').click()
 }
 
@@ -38,7 +38,7 @@ describe('Login', () => {
   })
 
   it('Should present valid state if form is valid', () => {
-    populateFormValid()
+    populateFields()
     FormHelper.testInputStatus('email')
     FormHelper.testInputStatus('password')
     FormHelper.testFormValidity()
@@ -77,14 +77,14 @@ describe('Login', () => {
 
   it('Should prevent multiples submits', () => {
     Http.mockOk()
-    populateFormValid()
+    populateFields()
     cy.getByTestId('submit').dblclick()
     FormHelper.testHttpCallsCount(1)
   })
 
   it('Should submit using [Enter] key', () => {
     Http.mockOk()
-    populateFormValid()
+    populateFields()
     cy.getByTestId('password').type('{enter}')
     FormHelper.testHttpCallsCount(1)
   })

@@ -7,7 +7,7 @@ const INVALID_PASSWORD_LENGTH = VALID_PASSWORD_LENGTH - 1
 const INVALID_EMAIL_IN_USE_ERROR_MESSAGE = 'E-mail já existe'
 const UNEXPECTED_ERROR_MESSAGE = 'Algo de errado aconteceu. Tente novamente em breve.'
 
-const populateFormValid = (): void => {
+const populateFields = (): void => {
   const password = faker.random.alphaNumeric(VALID_PASSWORD_LENGTH)
   FormHelper.populateField('name', faker.name.findName())
   FormHelper.populateField('email', faker.internet.email())
@@ -16,7 +16,7 @@ const populateFormValid = (): void => {
 }
 
 const simulateValidSubmit = (): void => {
-  populateFormValid()
+  populateFields()
   cy.getByTestId('submit').click()
 }
 
@@ -45,7 +45,7 @@ describe('SignUp', () => {
   })
 
   it('Should present valid state if form is valid', () => {
-    populateFormValid()
+    populateFields()
     FormHelper.testInputStatus('name')
     FormHelper.testInputStatus('email')
     FormHelper.testInputStatus('password')
