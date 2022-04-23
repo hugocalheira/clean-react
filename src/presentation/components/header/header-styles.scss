@@ -5,6 +5,7 @@
     background-color: $primary;
     border-top: 40px solid $primaryDark;
     justify-content: center;
+    transition: border-top .3s;
 
     .headerContent {
         display: flex;
@@ -44,4 +45,10 @@
         }
     }
 
+}
+
+@media only screen and (max-width: 600px) {
+    .headerWrap {
+        border-top-width: 10px;    
+    }
 }

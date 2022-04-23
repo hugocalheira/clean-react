@@ -1,6 +1,6 @@
 @import '../../styles/colors.scss';
 
-.header {
+.headerWrap {
     background-color: $primary;
     border-top: 40px solid $primaryDark;
     display: flex;
@@ -8,8 +8,20 @@
     align-items: center;
     padding: 40px;
     color: $white;
+    transition: border-top .3s;
 
     h1 {
         margin-top: 16px;
+    }
+}
+
+@media only screen and (max-width: 600px) {
+    .headerWrap {
+        border-top-width: 10px;
+        padding: 24px;
+
+        img {
+            transform: scale(.8);
+        }
     }
 }
