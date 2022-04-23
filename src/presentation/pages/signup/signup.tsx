@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Header, Input, Footer, FormStatus, SubmitButton } from '@/presentation/components'
+import { LoginHeader, Input, Footer, FormStatus, SubmitButton } from '@/presentation/components'
 import Styles from './signup-styles.scss'
 import Context from '@/presentation/contexts/form/form-context'
 import { useNavigate } from 'react-router-dom'
@@ -73,7 +73,7 @@ const SignUp: React.FC<Props> = ({ validation, addAccount, saveAccessToken }: Pr
 
   return (
     <div className={Styles.signupWrap}>
-        <Header />
+        <LoginHeader />
         <Context.Provider value={{ state, setState }}>
           <form data-testid='form' className={Styles.form} onSubmit={handleSubmit}>
               <h2>Criar conta</h2>
