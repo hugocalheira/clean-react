@@ -9,11 +9,7 @@ export class AxiosHttpClient implements HttpPostClient, HttpGetClient {
     } catch (error) {
       axiosResponse = error.response
     }
-
-    return {
-      statusCode: axiosResponse.status,
-      body: axiosResponse.data
-    }
+    return this.adapt(axiosResponse)
   }
 
   async get (params: HttpGetParams): Promise<HttpResponse> {
@@ -23,9 +19,11 @@ export class AxiosHttpClient implements HttpPostClient, HttpGetClient {
     } catch (error) {
       axiosResponse = error.response
     }
-    return {
-      statusCode: axiosResponse.status,
-      body: axiosResponse.data
-    }
+    return this.adapt(axiosResponse)
   }
+
+  private readonly adapt = ({ status, data }: AxiosResponse): HttpResponse => ({
+    statusCode: status,
+    body: data
+  })
 }
