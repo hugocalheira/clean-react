@@ -22,32 +22,10 @@ const SurveyList: React.FC = () => {
                     <footer>Ver Resultado</footer>
                 </li>
 
-                {/* repeated li */}
-                <li>
-                    <div className={Styles.surveyContent}>
-                        <Icon iconName={IconName.thumbUp} className={Styles.iconWrap} />
-                        <time>
-                            <span className={Styles.day}>22</span>
-                            <span className={Styles.month}>03</span>
-                            <span className={Styles.year}>2022</span>
-                        </time>
-                        <p>Qual o seu framework web favorito?</p>
-                    </div>
-                    <footer>Ver Resultado</footer>
-                </li>
+                <li></li>
+                <li></li>
+                <li></li>
 
-                <li>
-                    <div className={Styles.surveyContent}>
-                        <Icon iconName={IconName.thumbUp} className={Styles.iconWrap} />
-                        <time>
-                            <span className={Styles.day}>22</span>
-                            <span className={Styles.month}>03</span>
-                            <span className={Styles.year}>2022</span>
-                        </time>
-                        <p>Qual o seu framework web favorito?</p>
-                    </div>
-                    <footer>Ver Resultado</footer>
-                </li>
             </ul>
           </div>
           <Footer />
