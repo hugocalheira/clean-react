@@ -7,4 +7,4 @@ export const mockUnexpectedError = (): void => Helper.mockUnexpectedError(/signu
 
 export const mockInvalidData = (response: any = { accessToken: undefined }): void => Helper.mockOk(/signup/, 'POST', response)
 
-export const mockOk = (response: any = { accessToken: faker.datatype.uuid() }): void => Helper.mockOk(/signup/, 'POST', response)
+export const mockOk = (response: any = { accessToken: faker.datatype.uuid(), name: faker.name.findName() }): void => Helper.mockOk(/signup/, 'POST', response)

@@ -76,13 +76,16 @@ describe('SignUp', () => {
     FormHelper.testLocalStorageItem('accessToken')
   })
 
-  it('Should save accessToken in localStorage on success', () => {
-    const accessToken = faker.datatype.uuid()
-    Http.mockOk({ accessToken })
+  it('Should save account in localStorage on success', () => {
+    const account = {
+      accessToken: faker.datatype.uuid(),
+      name: faker.name.findName()
+    }
+    Http.mockOk(account)
     simulateValidSubmit()
     FormHelper.testMainError()
     FormHelper.testUrl('/')
-    FormHelper.testLocalStorageItem('accessToken', accessToken)
+    FormHelper.testLocalStorageItem('account', account)
   })
 
   it('Should prevent multiples submits', () => {
