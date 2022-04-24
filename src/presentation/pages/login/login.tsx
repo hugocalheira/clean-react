@@ -1,18 +1,18 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { LoginHeader, Input, Footer, FormStatus, SubmitButton } from '@/presentation/components'
 import Styles from './login-styles.scss'
-import Context from '@/presentation/contexts/form/form-context'
 import { Validation } from '@/presentation/protocols/validation'
-import { Authentication, UpdateCurrentAccount } from '@/domain/usecases'
+import { Authentication } from '@/domain/usecases'
 import { useNavigate } from 'react-router-dom'
+import { FormContext, ApiContext } from '@/presentation/contexts'
 
 type Props = {
   validation: Validation
   authentication: Authentication
-  updateCurrentAccount: UpdateCurrentAccount
 }
 
-const Login: React.FC<Props> = ({ validation, authentication, updateCurrentAccount }: Props) => {
+const Login: React.FC<Props> = ({ validation, authentication }: Props) => {
+  const { setCurrentAccount } = useContext(ApiContext)
   const [state, setState] = useState({
     isLoading: false,
     isFormInvalid: true,
@@ -49,7 +49,7 @@ const Login: React.FC<Props> = ({ validation, authentication, updateCurrentAccou
 
     try {
       const account = await authentication.auth({ email, password })
-      await updateCurrentAccount.save(account)
+      setCurrentAccount(account)
       navigate('/', { replace: true })
     } catch (err) {
       setState({
@@ -63,7 +63,7 @@ const Login: React.FC<Props> = ({ validation, authentication, updateCurrentAccou
   return (
     <div className={Styles.loginWrap}>
         <LoginHeader />
-        <Context.Provider value={{ state, setState }}>
+        <FormContext.Provider value={{ state, setState }}>
           <form data-testid="form" className={Styles.form} onSubmit={handleSubmit}>
               <h2>Login</h2>
               <Input type='email' name='email' placeholder='Digite seu e-mail'/>
@@ -72,7 +72,7 @@ const Login: React.FC<Props> = ({ validation, authentication, updateCurrentAccou
               <span onClick={() => navigate('/signup')} data-testid='signup-link' className={Styles.link}>Criar conta</span>
               <FormStatus />
           </form>
-        </Context.Provider>
+        </FormContext.Provider>
         <Footer />
     </div>
   )
