@@ -15,18 +15,17 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockedUsedNavigate
 }))
 
-const makeSut = (account: AccountModel = mockAccountModel()): {textContent: string, componentId: string} => {
+const makeSut = (account: AccountModel = mockAccountModel()): {componentId: string} => {
   const getCurrentAccountMock = jest.fn().mockReturnValueOnce(account)
-  const textContent = faker.random.word()
   const componentId = faker.datatype.uuid()
   render(
     <ApiContext.Provider value={{ getCurrentAccount: getCurrentAccountMock }}>
       <BrowserRouter >
-        <PrivateRoute component={() => <div data-testid={componentId}>{textContent}</div>}/>
+        <PrivateRoute component={() => <div data-testid={componentId}/>}/>
       </BrowserRouter>
     </ApiContext.Provider>
   )
-  return { textContent, componentId }
+  return { componentId }
 }
 
 describe('PrivateRoute', () => {
@@ -37,9 +36,8 @@ describe('PrivateRoute', () => {
   })
 
   test('Should render current component if token is not empty', () => {
-    const { componentId, textContent } = makeSut()
-    const Element = screen.getByTestId(componentId)
+    const { componentId } = makeSut()
+    expect(screen.queryByTestId(componentId)).toBeInTheDocument()
     expect(mockedUsedNavigate).not.toHaveBeenCalledWith('/login', { replace: true })
-    expect(Element.textContent).toBe(textContent)
   })
 })
