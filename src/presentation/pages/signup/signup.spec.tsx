@@ -1,5 +1,5 @@
 import React from 'react'
-import { cleanup, fireEvent, render, RenderResult, waitFor } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import SignUp from './signup'
 import { BrowserRouter } from 'react-router-dom'
 import { AddAccountSpy, Helper, ValidationStub } from '@/presentation/test'
@@ -9,7 +9,6 @@ import { AccountModel } from '@/domain/models'
 import { ApiContext } from '@/presentation/contexts'
 
 type SutTypes = {
-  sut: RenderResult
   addAccountSpy: AddAccountSpy
   setCurrentAccountMock: (account: AccountModel) => void
 }
@@ -23,7 +22,7 @@ const MakeSut = (params?: SutParams): SutTypes => {
   const addAccountSpy = new AddAccountSpy()
   validationStub.errorMessage = params?.validationError
   const setCurrentAccountMock = jest.fn()
-  const sut = render(
+  render(
     <ApiContext.Provider value={{ setCurrentAccount: setCurrentAccountMock }}>
       <BrowserRouter>
           <SignUp
@@ -33,15 +32,15 @@ const MakeSut = (params?: SutParams): SutTypes => {
       </BrowserRouter>
     </ApiContext.Provider>
   )
-  return { sut, addAccountSpy, setCurrentAccountMock }
+  return { addAccountSpy, setCurrentAccountMock }
 }
 
-const simulateValidSubmit = async (sut: RenderResult, name = faker.name.findName(), email = faker.internet.email(), password = faker.internet.password()): Promise<void> => {
+const simulateValidSubmit = async (name = faker.name.findName(), email = faker.internet.email(), password = faker.internet.password()): Promise<void> => {
   Helper.populateField('name', name)
   Helper.populateField('email', email)
   Helper.populateField('password', password)
   Helper.populateField('passwordConfirmation', password)
-  const form = sut.getByTestId('form')
+  const form = screen.getByTestId('form')
   fireEvent.submit(form)
   await waitFor(() => form)
 }
@@ -55,8 +54,6 @@ jest.mock('react-router-dom', () => ({
 }))
 
 describe('SignUp Component', () => {
-  afterEach(cleanup)
-
   test('Should start with initial state', () => {
     const validationError = faker.random.words()
     MakeSut({ validationError })
@@ -130,17 +127,17 @@ describe('SignUp Component', () => {
   })
 
   test('Should show spinner on submit', async () => {
-    const { sut } = MakeSut()
-    await simulateValidSubmit(sut)
+    MakeSut()
+    await simulateValidSubmit()
     Helper.testElementExist('spinner')
   })
 
   test('Should call AddAccount with correct values', async () => {
-    const { sut, addAccountSpy } = MakeSut()
+    const { addAccountSpy } = MakeSut()
     const name = faker.name.findName()
     const email = faker.internet.email()
     const password = faker.internet.password()
-    await simulateValidSubmit(sut, name, email, password)
+    await simulateValidSubmit(name, email, password)
     expect(addAccountSpy.params).toEqual({
       name,
       email,
@@ -150,38 +147,38 @@ describe('SignUp Component', () => {
   })
 
   test('Should call AddAccount only once', async () => {
-    const { sut, addAccountSpy } = MakeSut()
-    await simulateValidSubmit(sut)
-    await simulateValidSubmit(sut)
+    const { addAccountSpy } = MakeSut()
+    await simulateValidSubmit()
+    await simulateValidSubmit()
     expect(addAccountSpy.callsCount).toBe(1)
   })
 
   test('Should not call AddAccount if form is invalid', async () => {
     const validationError = faker.random.words()
-    const { sut: sutWithValidationError, addAccountSpy } = MakeSut({ validationError })
-    await simulateValidSubmit(sutWithValidationError)
+    const { addAccountSpy } = MakeSut({ validationError })
+    await simulateValidSubmit()
     expect(addAccountSpy.callsCount).toBe(0)
   })
 
   test('Should present error if AddAccount fails', async () => {
-    const { sut, addAccountSpy } = MakeSut()
+    const { addAccountSpy } = MakeSut()
     const error = new EmailInUseError()
     jest.spyOn(addAccountSpy, 'add').mockReturnValueOnce(Promise.reject(error))
-    await simulateValidSubmit(sut)
+    await simulateValidSubmit()
     await Helper.testElementText('main-error', error.message)
     Helper.testChildCount('errorWrap', 1)
   })
 
   test('Should call setCurrentAccountMock with correct params on success', async () => {
-    const { sut, addAccountSpy, setCurrentAccountMock } = MakeSut()
-    await simulateValidSubmit(sut)
+    const { addAccountSpy, setCurrentAccountMock } = MakeSut()
+    await simulateValidSubmit()
     expect(setCurrentAccountMock).toHaveBeenCalledWith(addAccountSpy.account)
     expect(mockedUsedNavigate).toHaveBeenCalledWith('/', { replace: true })
   })
 
   test('Should navigate to /login', () => {
-    const { sut } = MakeSut()
-    const login = sut.getByTestId('login-link')
+    MakeSut()
+    const login = screen.getByTestId('login-link')
     fireEvent.click(login)
     expect(mockedUsedNavigate).toHaveBeenCalledWith('/login')
   })
