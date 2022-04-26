@@ -9,14 +9,21 @@ type Props = {
 
 const SurveyItem: React.FC<Props> = ({ survey }: Props) => {
   const { question, date } = survey
+  const iconName = survey.didAnswer ? IconName.thumbUp : IconName.thumbDown
   return (
     <li className={Styles.surveyItemWrap}>
         <div className={Styles.surveyContent}>
-            <Icon iconName={IconName.thumbUp} className={Styles.iconWrap} />
+            <Icon iconName={iconName} className={Styles.iconWrap} />
             <time>
-                <span data-testid='day' className={Styles.day}>{date.getDate()}</span>
-                <span data-testid='month' className={Styles.month}>{date.toLocaleDateString('pt-BR', { month: 'short' }).replace('.','')}</span>
-                <span data-testid='year' className={Styles.year}>{date.getFullYear()}</span>
+                <span data-testid='day' className={Styles.day}>
+                  {date.getDate().toString().padStart(2, '0')}
+                </span>
+                <span data-testid='month' className={Styles.month}>
+                  {date.toLocaleDateString('pt-BR', { month: 'short' }).replace('.','')}
+                </span>
+                <span data-testid='year' className={Styles.year}>
+                  {date.getFullYear()}
+                </span>
             </time>
             <p data-testid='question'>{question}</p>
         </div>
