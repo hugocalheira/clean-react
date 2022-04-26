@@ -9,7 +9,7 @@ export const mockPostRequest = (): HttpPostParams => ({
 export const mockGetRequest = (): HttpGetParams => ({
   url: faker.internet.url(),
   headers: {
-    Authorization: `Bearer ${faker.datatype.uuid()}`
+    [faker.database.column()]: faker.datatype.uuid()
   }
 })
 
