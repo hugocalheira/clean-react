@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import { LoadSurveyList } from '@/domain/usecases'
-import { Footer, Header } from '@/presentation/components'
-import { SurveyItemEmpty, SurveyItem } from '@/presentation/pages/survey-list/components'
-import Styles from './survey-list-styles.scss'
 import { SurveyModel } from '@/domain/models'
+import { Footer, Header } from '@/presentation/components'
+import { SurveyContext, SurveyError, SurveyListItem } from '@/presentation/pages/survey-list/components'
+import Styles from './survey-list-styles.scss'
 
 type Props = {
   loadSurveylist: LoadSurveyList
@@ -21,29 +21,16 @@ const SurveyList: React.FC<Props> = ({ loadSurveylist }: Props) => {
   },[])
 
   return (
-      <div className={Styles.surveyListWrap}>
-          <Header />
-          <div className={Styles.contentWrap}>
-            <h2>Enquetes</h2>
-            { state.error
-              ? (
-              <div>
-                <span data-testid="error">{state.error}</span>
-                <button>Recarregar</button>
-              </div>
-                )
-              : (
-              <ul data-testid="survey-list">
-                { state.surveys.length
-                  ? state.surveys.map((survey: SurveyModel) => <SurveyItem key={survey.id} survey={survey}/>)
-                  : <SurveyItemEmpty />
-                }
-              </ul>
-                )
-            }
-          </div>
-          <Footer />
+    <div className={Styles.surveyListWrap}>
+      <Header />
+      <div className={Styles.contentWrap}>
+        <h2>Enquetes</h2>
+        <SurveyContext.Provider value={{ state, setState }}>
+        { state.error ? <SurveyError /> : <SurveyListItem /> }
+        </SurveyContext.Provider>
       </div>
+      <Footer />
+    </div>
   )
 }
 

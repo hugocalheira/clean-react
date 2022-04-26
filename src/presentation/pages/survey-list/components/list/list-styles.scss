@@ -1,0 +1,12 @@
+.listWrap {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+@media only screen and (max-width: 600px) {
+    .listWrap {
+        flex-direction: column;
+    }
+}
