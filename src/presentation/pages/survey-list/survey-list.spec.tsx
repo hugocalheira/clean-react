@@ -1,5 +1,5 @@
 import React from 'react'
-import { render, screen, waitFor } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { LoadSurveyList } from '@/domain/usecases'
 import { SurveyModel } from '@/domain/models'
 import { mockSurveyListModel } from '@/domain/test'
@@ -53,13 +53,26 @@ describe('SurveyList Component', () => {
   })
 
   test('Should render error on failure', async () => {
-    const loadSurveyListSpy = new LoadSurveyListSpy()
     const unexpectedError = new UnexpectedError()
+    const loadSurveyListSpy = new LoadSurveyListSpy()
     jest.spyOn(loadSurveyListSpy, 'loadAll').mockRejectedValueOnce(unexpectedError)
     makeSut(loadSurveyListSpy)
     // await waitFor(() => screen.getByRole('heading'))
     await screen.findByText(unexpectedError.message)
     expect(screen.queryByTestId('survey-list')).not.toBeInTheDocument()
     expect(screen.getByTestId('error')).toHaveTextContent(unexpectedError.message)
+  })
+
+  test('Should call LoadSurveyList on reload', async () => {
+    const unexpectedError = new UnexpectedError()
+    const loadSurveyListSpy = new LoadSurveyListSpy()
+    jest.spyOn(loadSurveyListSpy, 'loadAll').mockRejectedValueOnce(unexpectedError)
+    makeSut(loadSurveyListSpy)
+
+    await screen.findByText(unexpectedError.message)
+    fireEvent.click(screen.getByTestId('reload'))
+    await waitFor(() => screen.getByRole('heading'))
+    expect(loadSurveyListSpy.callsCount).toBe(1)
+    expect(screen.queryByTestId('error')).not.toBeInTheDocument()
   })
 })
