@@ -25,9 +25,6 @@ export const mockSurveyModel = (): SurveyModel => {
 }
 
 export const mockSurveyListModel = (): SurveyModel[] => {
-  return [
-    mockSurveyModel(),
-    mockSurveyModel(),
-    mockSurveyModel()
-  ]
+  const randomNumber = Math.ceil(Math.random() * 5)
+  return [...Array(randomNumber)].map(() => mockSurveyModel())
 }
