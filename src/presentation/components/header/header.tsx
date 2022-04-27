@@ -5,8 +5,9 @@ import { ApiContext } from '@/presentation/contexts'
 import Styles from './header-styles.scss'
 
 const Header: React.FC = () => {
-  const { setCurrentAccount } = useContext(ApiContext)
+  const { setCurrentAccount, getCurrentAccount } = useContext(ApiContext)
   const navigate = useNavigate()
+  const account = getCurrentAccount()
 
   const logout = (e: React.MouseEvent): void => {
     e.preventDefault()
@@ -19,7 +20,7 @@ const Header: React.FC = () => {
         <div className={Styles.headerContent}>
             <Logo />
             <div className={Styles.logoutWrap}>
-                <span>Hugo</span>
+                <span data-testid="username">{account.name}</span>
                 <a data-testid='logout' onClick={logout} href="#">sair</a>
             </div>
         </div>
