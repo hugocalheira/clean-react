@@ -1,6 +1,6 @@
 import React from 'react'
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
-import { LoadSurveyListSpy } from '@/domain/test'
+import { LoadSurveyListSpy, mockAccountModel } from '@/domain/test'
 import SurveyList from './survey-list'
 import { UnexpectedError } from '@/domain/errors'
 import { ApiContext } from '@/presentation/contexts'
@@ -12,7 +12,10 @@ type SutTypes = {
 
 const makeSut = (loadSurveyListSpy = new LoadSurveyListSpy()): SutTypes => {
   render(
-    <ApiContext.Provider value={{ setCurrentAccount: jest.fn() }}>
+    <ApiContext.Provider value={{ 
+      setCurrentAccount: jest.fn(), 
+      getCurrentAccount: mockAccountModel 
+    }}>
       <BrowserRouter>
       <SurveyList loadSurveylist={loadSurveyListSpy} />
       </BrowserRouter>
