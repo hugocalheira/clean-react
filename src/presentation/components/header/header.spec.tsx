@@ -1,7 +1,7 @@
 import React from 'react'
-import { fireEvent, render, screen } from "@testing-library/react"
+import { fireEvent, render, screen } from '@testing-library/react'
 import { ApiContext } from '@/presentation/contexts'
-import Header from "./header"
+import Header from './header'
 import 'jest-localstorage-mock'
 import { BrowserRouter } from 'react-router-dom'
 import { AccountModel } from '@/domain/models'
@@ -21,10 +21,11 @@ type SutTypes = {
 
 const makeSut = (account = mockAccountModel()): SutTypes => {
   const setCurrentAccountMock = jest.fn()
-  const sut = render(
-    <ApiContext.Provider value={{ 
+  render(
+    <ApiContext.Provider value={{
       setCurrentAccount: setCurrentAccountMock,
-      getCurrentAccount: () => account }}>
+      getCurrentAccount: () => account
+    }}>
       <BrowserRouter>
         <Header />
       </BrowserRouter>
@@ -37,7 +38,7 @@ const makeSut = (account = mockAccountModel()): SutTypes => {
 
 describe('Header Component', () => {
   test('Should call SetCurrentAccount with null', () => {
-    const {setCurrentAccountMock} = makeSut()
+    const { setCurrentAccountMock } = makeSut()
     fireEvent.click(screen.getByTestId('logout'))
     expect(setCurrentAccountMock).toHaveBeenCalledWith(null)
     expect(mockedUsedNavigate).toHaveBeenCalledWith('/login', { replace: true })

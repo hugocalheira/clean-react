@@ -12,9 +12,9 @@ type SutTypes = {
 
 const makeSut = (loadSurveyListSpy = new LoadSurveyListSpy()): SutTypes => {
   render(
-    <ApiContext.Provider value={{ 
-      setCurrentAccount: jest.fn(), 
-      getCurrentAccount: mockAccountModel 
+    <ApiContext.Provider value={{
+      setCurrentAccount: jest.fn(),
+      getCurrentAccount: mockAccountModel
     }}>
       <BrowserRouter>
       <SurveyList loadSurveylist={loadSurveyListSpy} />
