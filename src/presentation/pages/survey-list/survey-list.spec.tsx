@@ -3,7 +3,7 @@ import { BrowserRouter } from 'react-router-dom'
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { LoadSurveyListSpy, mockAccountModel } from '@/domain/test'
 import { AccountModel } from '@/domain/models'
-import { InvalidCredentialsError, UnexpectedError } from '@/domain/errors'
+import { AccessDeniedError, UnexpectedError } from '@/domain/errors'
 import { ApiContext } from '@/presentation/contexts'
 import SurveyList from './survey-list'
 
@@ -75,15 +75,15 @@ describe('SurveyList Component', () => {
     expect(screen.getByTestId('error')).toHaveTextContent(unexpectedError.message)
   })
 
-  test('Should render InvalidCredentialsError, remove any accessToken stored and navigate to /login', async () => {
-    const invalidCredentialsError = new InvalidCredentialsError()
+  test('Should render a AccessDeniedError, remove any accessToken stored and navigate to /login', async () => {
+    const accessDeniedError = new AccessDeniedError()
     const loadSurveyListSpy = new LoadSurveyListSpy()
-    jest.spyOn(loadSurveyListSpy, 'loadAll').mockRejectedValueOnce(invalidCredentialsError)
+    jest.spyOn(loadSurveyListSpy, 'loadAll').mockRejectedValueOnce(accessDeniedError)
     const { setCurrentAccountMock } = makeSut(loadSurveyListSpy)
 
-    await screen.findByText(invalidCredentialsError.message)
+    await screen.findByText(accessDeniedError.message)
     expect(screen.queryByTestId('survey-list')).not.toBeInTheDocument()
-    expect(screen.getByTestId('error')).toHaveTextContent(invalidCredentialsError.message)
+    expect(screen.getByTestId('error')).toHaveTextContent(accessDeniedError.message)
     expect(setCurrentAccountMock).toHaveBeenCalledWith(null)
     expect(mockedUsedNavigate).toHaveBeenCalledWith('/login', { replace: true })
   })

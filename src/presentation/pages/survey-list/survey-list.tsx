@@ -5,6 +5,7 @@ import { SurveyContext, SurveyError, SurveyListItem } from '@/presentation/pages
 import Styles from './survey-list-styles.scss'
 import { ApiContext } from '@/presentation/contexts'
 import { useNavigate } from 'react-router-dom'
+import { AccessDeniedError } from '@/domain/errors'
 
 type Props = {
   loadSurveylist: LoadSurveyList
@@ -24,7 +25,7 @@ const SurveyList: React.FC<Props> = ({ loadSurveylist }: Props) => {
       .then(surveys => setState({ ...state, surveys }))
       .catch(error => {
         setState({ ...state, error: error.message })
-        if (error.name === 'InvalidCredentialsError') {
+        if (error.name === new AccessDeniedError().name) {
           setCurrentAccount(null)
           navigate('/login', { replace: true })
         }
