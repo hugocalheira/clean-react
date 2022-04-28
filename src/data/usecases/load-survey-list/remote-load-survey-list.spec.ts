@@ -1,9 +1,9 @@
 import { RemoteLoadSurveyList } from './remote-load-survey-list'
 import { HttpGetClientSpy, mockRemoteSurveyListModel } from '@/data/test'
 import { HttpStatusCode } from '@/data/protocols/http'
-import { UnexpectedError } from '@/domain/errors'
-import faker from '@faker-js/faker'
+import { InvalidCredentialsError, UnexpectedError } from '@/domain/errors'
 import { LoadSurveyList } from '@/domain/usecases'
+import faker from '@faker-js/faker'
 
 type SutTypes = {
   sut: RemoteLoadSurveyList
@@ -34,13 +34,13 @@ describe('RemoteLoadSurveyList', () => {
     expect(httpGetClientSpy.url).toBe(url)
   })
 
-  test('Should throw UnexpectedError if HttpGetClient returns 403', async () => {
+  test('Should throw InvalidCredentialsError if HttpGetClient returns 403', async () => {
     const { sut, httpGetClientSpy } = makeSut()
     httpGetClientSpy.response = {
       statusCode: HttpStatusCode.forbidden
     }
     const promise = sut.loadAll()
-    await expect(promise).rejects.toThrow(new UnexpectedError())
+    await expect(promise).rejects.toThrow(new InvalidCredentialsError())
   })
 
   test('Should throw UnexpectedError if HttpGetClient returns 404', async () => {
