@@ -1,19 +1,22 @@
 import React from 'react'
+import { BrowserRouter } from 'react-router-dom'
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { LoadSurveyListSpy, mockAccountModel } from '@/domain/test'
-import SurveyList from './survey-list'
-import { UnexpectedError } from '@/domain/errors'
+import { AccountModel } from '@/domain/models'
+import { InvalidCredentialsError, UnexpectedError } from '@/domain/errors'
 import { ApiContext } from '@/presentation/contexts'
-import { BrowserRouter } from 'react-router-dom'
+import SurveyList from './survey-list'
 
 type SutTypes = {
   loadSurveyListSpy: LoadSurveyListSpy
+  setCurrentAccountMock: (accont: AccountModel) => void
 }
 
 const makeSut = (loadSurveyListSpy = new LoadSurveyListSpy()): SutTypes => {
+  const setCurrentAccountMock = jest.fn()
   render(
     <ApiContext.Provider value={{
-      setCurrentAccount: jest.fn(),
+      setCurrentAccount: setCurrentAccountMock,
       getCurrentAccount: mockAccountModel
     }}>
       <BrowserRouter>
@@ -22,9 +25,18 @@ const makeSut = (loadSurveyListSpy = new LoadSurveyListSpy()): SutTypes => {
     </ApiContext.Provider>
   )
   return {
-    loadSurveyListSpy
+    loadSurveyListSpy,
+    setCurrentAccountMock
   }
 }
+
+// pay attention to write it at the top level of your file
+const mockedUsedNavigate = jest.fn()
+jest.mock('react-router-dom', () => ({
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+  ...jest.requireActual('react-router-dom') as any,
+  useNavigate: () => mockedUsedNavigate
+}))
 
 describe('SurveyList Component', () => {
   test('Should present 4 empty items on start', async () => {
@@ -61,6 +73,19 @@ describe('SurveyList Component', () => {
     await screen.findByText(unexpectedError.message)
     expect(screen.queryByTestId('survey-list')).not.toBeInTheDocument()
     expect(screen.getByTestId('error')).toHaveTextContent(unexpectedError.message)
+  })
+
+  test('Should render InvalidCredentialsError, remove any accessToken stored and navigate to /login', async () => {
+    const invalidCredentialsError = new InvalidCredentialsError()
+    const loadSurveyListSpy = new LoadSurveyListSpy()
+    jest.spyOn(loadSurveyListSpy, 'loadAll').mockRejectedValueOnce(invalidCredentialsError)
+    const { setCurrentAccountMock } = makeSut(loadSurveyListSpy)
+
+    await screen.findByText(invalidCredentialsError.message)
+    expect(screen.queryByTestId('survey-list')).not.toBeInTheDocument()
+    expect(screen.getByTestId('error')).toHaveTextContent(invalidCredentialsError.message)
+    expect(setCurrentAccountMock).toHaveBeenCalledWith(null)
+    expect(mockedUsedNavigate).toHaveBeenCalledWith('/login', { replace: true })
   })
 
   test('Should call LoadSurveyList on reload', async () => {
