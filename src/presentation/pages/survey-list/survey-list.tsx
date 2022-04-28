@@ -25,7 +25,7 @@ const SurveyList: React.FC<Props> = ({ loadSurveylist }: Props) => {
       .then(surveys => setState({ ...state, surveys }))
       .catch(error => {
         setState({ ...state, error: error.message })
-        if (error.name === new AccessDeniedError().name) {
+        if (error instanceof AccessDeniedError) {
           setCurrentAccount(null)
           navigate('/login', { replace: true })
         }

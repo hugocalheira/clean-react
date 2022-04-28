@@ -64,7 +64,7 @@ describe('SurveyList Component', () => {
     expect(screen.queryByTestId('error')).not.toBeInTheDocument()
   })
 
-  test('Should render error on failure', async () => {
+  test('Should render error on UnexpectedError', async () => {
     const unexpectedError = new UnexpectedError()
     const loadSurveyListSpy = new LoadSurveyListSpy()
     jest.spyOn(loadSurveyListSpy, 'loadAll').mockRejectedValueOnce(unexpectedError)
@@ -75,7 +75,7 @@ describe('SurveyList Component', () => {
     expect(screen.getByTestId('error')).toHaveTextContent(unexpectedError.message)
   })
 
-  test('Should render a AccessDeniedError, remove any accessToken stored and navigate to /login', async () => {
+  test('Should logout on AccessDeniedError', async () => {
     const accessDeniedError = new AccessDeniedError()
     const loadSurveyListSpy = new LoadSurveyListSpy()
     jest.spyOn(loadSurveyListSpy, 'loadAll').mockRejectedValueOnce(accessDeniedError)
