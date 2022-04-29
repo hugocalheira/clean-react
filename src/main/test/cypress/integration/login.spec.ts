@@ -62,8 +62,8 @@ describe('Login', () => {
   it('Should present UnexpectedError if invalid data is returned', () => {
     Http.mockInvalidData()
     simulateValidSubmit()
+    FormHelper.testUrl('/login?error=invalidAccessToken')
     FormHelper.testMainError(UNEXPECTED_ERROR_MESSAGE)
-    FormHelper.testUrl('/login')
     FormHelper.testLocalStorageItem('accessToken')
   })
 

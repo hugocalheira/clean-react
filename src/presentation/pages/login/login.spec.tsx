@@ -56,7 +56,8 @@ describe('Login Component', () => {
   test('Should start with initial state', () => {
     const validationError = faker.random.words()
     MakeSut({ validationError })
-    expect(screen.getByTestId('errorWrap').children).toHaveLength(0)
+    // expect(screen.getByTestId('errorWrap').children).toHaveLength(0)
+    expect(screen.queryByTestId('spinner')).not.toBeInTheDocument()
     expect(screen.getByTestId('submit')).toBeDisabled()
     Helper.testStatusForField('email', validationError)
     Helper.testStatusForField('password', validationError)

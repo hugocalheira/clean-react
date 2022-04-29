@@ -12,7 +12,7 @@ const PrivateRoute: React.FC<PrivateProps> = ({ component: Component }: PrivateP
   const accessToken = getCurrentAccount()?.accessToken
 
   useEffect(() => {
-    !accessToken && navigate('/login', { replace: true })
+    !accessToken && navigate('/login?error=invalidAccessToken', { replace: true })
   },[])
 
   return accessToken ? <Component /> : <></>

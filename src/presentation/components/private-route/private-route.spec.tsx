@@ -32,7 +32,7 @@ describe('PrivateRoute', () => {
   afterEach(jest.clearAllMocks)
   test('Should redirect to /login if token is empty', () => {
     makeSut(null)
-    expect(mockedUsedNavigate).toHaveBeenCalledWith('/login', { replace: true })
+    expect(mockedUsedNavigate).toHaveBeenCalledWith('/login?error=invalidAccessToken', { replace: true })
   })
 
   test('Should render current component if token is not empty', () => {
