@@ -1,4 +1,5 @@
-import * as FormHelper from '../support/form-helper'
+import * as FormHelper from '../support/form-helpers'
+import * as Helper from '../support/helpers'
 import * as Http from '../support/signup-mocks'
 import faker from '@faker-js/faker'
 
@@ -58,22 +59,22 @@ describe('SignUp', () => {
     Http.mockEmailInUseError()
     simulateValidSubmit()
     FormHelper.testMainError(INVALID_EMAIL_IN_USE_ERROR_MESSAGE)
-    FormHelper.testUrl('/signup')
+    Helper.testUrl('/signup')
   })
 
   it('Should present UnexpectedError on default error cases', () => {
     Http.mockUnexpectedError()
     simulateValidSubmit()
     FormHelper.testMainError(UNEXPECTED_ERROR_MESSAGE)
-    FormHelper.testUrl('/signup')
+    Helper.testUrl('/signup')
   })
 
   it('Should present UnexpectedError if invalid data is returned', () => {
     Http.mockInvalidData()
     simulateValidSubmit()
-    FormHelper.testUrl('/login?error=invalidAccessToken')
+    Helper.testUrl('/login?error=invalidAccessToken')
     FormHelper.testMainError(UNEXPECTED_ERROR_MESSAGE)
-    FormHelper.testLocalStorageItem('accessToken')
+    Helper.testLocalStorageItem('accessToken')
   })
 
   it('Should save account in localStorage on success', () => {
@@ -84,28 +85,28 @@ describe('SignUp', () => {
     Http.mockOk(account)
     simulateValidSubmit()
     FormHelper.testMainError()
-    FormHelper.testUrl('/')
-    FormHelper.testLocalStorageItem('account', account)
+    Helper.testUrl('/')
+    Helper.testLocalStorageItem('account', account)
   })
 
   it('Should prevent multiples submits', () => {
     Http.mockOk()
     populateFields()
     cy.getByTestId('submit').dblclick()
-    FormHelper.testHttpCallsCount(1)
+    Helper.testHttpCallsCount(1)
   })
 
   it('Should submit using [Enter] key', () => {
     Http.mockOk()
     populateFields().type('{enter}')
-    FormHelper.testHttpCallsCount(1)
+    Helper.testHttpCallsCount(1)
   })
 
   it('Should not call submit if form is invalid', () => {
     Http.mockOk()
     populateFields()
     FormHelper.populateField('passwordConfirmation', faker.random.alphaNumeric(VALID_PASSWORD_LENGTH)).type('{enter}')
-    FormHelper.testHttpCallsCount(0)
-    FormHelper.testUrl('/signup')
+    Helper.testHttpCallsCount(0)
+    Helper.testUrl('/signup')
   })
 })

@@ -11,30 +11,9 @@ export const testMainError = (error?: string): void => {
   error && cy.getByTestId('main-error').should('contain.text', error)
 }
 
-export const testHttpCallsCount = (count: number): void => {
-  cy.get('@request.all').should('have.length', count)
-}
-
 export const populateField = (fieldId: string, value: string): Cypress.Chainable<Element> => {
   cy.getByTestId(fieldId).focus().type(value)
   return cy.getByTestId(fieldId)
-}
-
-export const testUrl = (url: string): void => {
-  const baseUrl: string = Cypress.config().baseUrl
-  cy.url().should('eq', `${baseUrl}${url}`)
-}
-
-export const testLocalStorageItem = (key: string, value?: object): void => {
-  cy.window().then(window => {
-    const savedValue = window.localStorage.getItem(key)
-    if (value) {
-      assert.isOk(savedValue)
-      assert.equal(savedValue, JSON.stringify(value))
-    } else {
-      assert.isNull(savedValue)
-    }
-  })
 }
 
 export const testFormValidity = (isValid = true): void => {
