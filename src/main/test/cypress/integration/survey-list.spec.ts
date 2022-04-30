@@ -17,4 +17,11 @@ describe('SurveyList', () => {
     cy.visit('')
     cy.getByTestId('error').should('contain.text', UNEXPECTED_ERROR_MESSAGE)
   })
+
+  it('Should logout on AccessDeniedError', () => {
+    Http.mockAccessDeniedError()
+    cy.visit('')
+    Helper.testUrl('/login')
+    Helper.testLocalStorageItem('account')
+  })
 })
