@@ -1,12 +1,18 @@
-import * as FormHelper from '../support/form-helpers'
-import * as Helper from '../support/helpers'
-import * as Http from '../support/signup-mocks'
+import * as FormHelper from '../utils/form-helpers'
+import * as Helper from '../utils/helpers'
+import * as Http from '../utils/http-mocks'
 import faker from '@faker-js/faker'
 
 const VALID_PASSWORD_LENGTH = 5
 const INVALID_PASSWORD_LENGTH = VALID_PASSWORD_LENGTH - 1
 const INVALID_EMAIL_IN_USE_ERROR_MESSAGE = 'E-mail já existe'
 const UNEXPECTED_ERROR_MESSAGE = 'Algo de errado aconteceu. Tente novamente em breve.'
+
+const path = /signup/
+const mockEmailInUseError = (): void => Http.mockForbiddenError(path, 'POST')
+const mockUnexpectedError = (): void => Http.mockServerError(path, 'POST')
+const mockInvalidData = (response: any = { accessToken: undefined }): void => Http.mockOk(path, 'POST', response)
+const mockSuccess = (response: any = 'fx:account'): void => Http.mockOk(path, 'POST', response)
 
 const populateFields = (): Cypress.Chainable<Element> => {
   const password = faker.random.alphaNumeric(VALID_PASSWORD_LENGTH)
@@ -56,21 +62,21 @@ describe('SignUp', () => {
   })
 
   it('Should present EmailInUseError on 403', () => {
-    Http.mockEmailInUseError()
+    mockEmailInUseError()
     simulateValidSubmit()
     FormHelper.testMainError(INVALID_EMAIL_IN_USE_ERROR_MESSAGE)
     Helper.testUrl('/signup')
   })
 
   it('Should present UnexpectedError on default error cases', () => {
-    Http.mockUnexpectedError()
+    mockUnexpectedError()
     simulateValidSubmit()
     FormHelper.testMainError(UNEXPECTED_ERROR_MESSAGE)
     Helper.testUrl('/signup')
   })
 
   it('Should present UnexpectedError if invalid data is returned', () => {
-    Http.mockInvalidData()
+    mockInvalidData()
     simulateValidSubmit()
     Helper.testUrl('/login?error=invalidAccessToken')
     FormHelper.testMainError(UNEXPECTED_ERROR_MESSAGE)
@@ -82,7 +88,7 @@ describe('SignUp', () => {
       accessToken: faker.datatype.uuid(),
       name: faker.name.findName()
     }
-    Http.mockOk(account)
+    mockSuccess(account)
     simulateValidSubmit()
     FormHelper.testMainError()
     Helper.testUrl('/')
@@ -90,20 +96,20 @@ describe('SignUp', () => {
   })
 
   it('Should prevent multiples submits', () => {
-    Http.mockOk()
+    mockSuccess()
     populateFields()
     cy.getByTestId('submit').dblclick()
     Helper.testHttpCallsCount(1)
   })
 
   it('Should submit using [Enter] key', () => {
-    Http.mockOk()
+    mockSuccess()
     populateFields().type('{enter}')
     Helper.testHttpCallsCount(1)
   })
 
   it('Should not call submit if form is invalid', () => {
-    Http.mockOk()
+    mockSuccess()
     populateFields()
     FormHelper.populateField('passwordConfirmation', faker.random.alphaNumeric(VALID_PASSWORD_LENGTH)).type('{enter}')
     Helper.testHttpCallsCount(0)
