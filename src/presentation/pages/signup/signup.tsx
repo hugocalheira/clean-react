@@ -29,23 +29,18 @@ const SignUp: React.FC<Props> = ({ validation, addAccount }: Props) => {
 
   const navigate = useNavigate()
 
-  useEffect(() => {
-    const { name, email, password, passwordConfirmation } = state
-    const formData = { name, email, password, passwordConfirmation }
-    const nameError = validation.validate('name', formData)
-    const emailError = validation.validate('email', formData)
-    const passwordError = validation.validate('password', formData)
-    const passwordConfirmationError = validation.validate('passwordConfirmation', formData)
-
-    setState(oldState => ({
-      ...oldState,
-      nameError,
-      emailError,
-      passwordError,
-      passwordConfirmationError,
-      isFormInvalid: !!nameError || !!emailError || !!passwordError || !!passwordConfirmationError
+  const validate = (field: string): void => {
+    setState(old => ({ ...old, [`${field}Error`]: validation.validate(field, state) }))
+    setState(old => ({
+      ...old,
+      isFormInvalid: !!old.nameError || !!old.emailError || !!old.passwordError || !!old.passwordConfirmationError
     }))
-  }, [state.name, state.email, state.password, state.passwordConfirmation])
+  }
+
+  useEffect(() => validate('name'), [state.name])
+  useEffect(() => validate('email'), [state.email])
+  useEffect(() => validate('password'), [state.password])
+  useEffect(() => validate('passwordConfirmation'), [state.passwordConfirmation])
 
   async function handleSubmit (event: React.FormEvent<HTMLFormElement>): Promise<void> {
     event.preventDefault()

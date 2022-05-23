@@ -25,18 +25,13 @@ const Login: React.FC<Props> = ({ validation, authentication }: Props) => {
 
   const navigate = useNavigate()
 
-  useEffect(() => {
-    const { email, password } = state
-    const formData = { email, password }
-    const emailError = validation.validate('email', formData)
-    const passwordError = validation.validate('password', formData)
-    setState(oldState => ({
-      ...oldState,
-      emailError,
-      passwordError,
-      isFormInvalid: !!emailError || !!passwordError
-    }))
-  }, [state.email, state.password])
+  const validate = (field: string): void => {
+    setState(old => ({ ...old, [`${field}Error`]: validation.validate(field, state) }))
+    setState(old => ({ ...old, isFormInvalid: !!old.emailError || !!old.passwordError }))
+  }
+
+  useEffect(() => validate('email'), [state.email])
+  useEffect(() => validate('password'), [state.password])
 
   async function handleSubmit (event: React.FormEvent<HTMLFormElement>): Promise<void> {
     event.preventDefault()
