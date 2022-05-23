@@ -12,7 +12,7 @@ const path = /signup/
 const mockEmailInUseError = (): void => Http.mockForbiddenError(path, 'POST')
 const mockUnexpectedError = (): void => Http.mockServerError(path, 'POST')
 const mockInvalidData = (response: any = { accessToken: undefined }): void => Http.mockOk(path, 'POST', response)
-const mockSuccess = (response: any = 'fx:account'): void => Http.mockOk(path, 'POST', response)
+const mockSuccess = (response: any = 'account'): void => Http.mockOk(path, 'POST', response)
 
 const populateFields = (): Cypress.Chainable<Element> => {
   const password = faker.random.alphaNumeric(VALID_PASSWORD_LENGTH)
