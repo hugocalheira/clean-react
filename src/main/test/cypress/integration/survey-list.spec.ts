@@ -25,6 +25,15 @@ describe('SurveyList', () => {
     cy.getByTestId('error').should('contain.text', UNEXPECTED_ERROR_MESSAGE)
   })
 
+  it('Should reload on button click', () => {
+    mockUnexpectedError()
+    cy.visit('')
+    cy.getByTestId('error').should('contain.text', UNEXPECTED_ERROR_MESSAGE)
+    mockSuccess()
+    cy.getByTestId('reload').click()
+    cy.get('li:not(:empty)').should('have.length', 2)
+  })
+
   it('Should logout on AccessDeniedError', () => {
     mockAccessDeniedError()
     cy.visit('')
