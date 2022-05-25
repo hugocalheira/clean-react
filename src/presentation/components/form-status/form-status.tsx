@@ -9,7 +9,7 @@ const FormStatus: React.FC = () => {
   const { isLoading, mainError } = state
 
   const getQueryParamError = (): void => {
-    const errorValue = new URL(location.href).searchParams.get('error')
+    const errorValue = new URLSearchParams(location.search).get('error')
     if (errorValue === 'invalidAccessToken') {
       const error = new UnexpectedError()
       setState({ ...state, mainError: error.message })
