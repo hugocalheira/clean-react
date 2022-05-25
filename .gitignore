@@ -2,4 +2,4 @@ node_modules
 /cypress
 .vscode
 coverage
-public/js
+dist

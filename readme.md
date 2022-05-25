@@ -5,7 +5,7 @@
 
 # **4Dev React - Enquetes para Programadores**
 
-[![alt text](https://raw.githubusercontent.com/rmanguinho/clean-react/bb21570820bd632edec5b04e1cbe21224924d436/public/img/course-logo.png "Link para o treinamento")](https://www.udemy.com/course/react-com-mango)
+[![4Dev React - Enquetes para Programadores](./public/course-logo.png "Link para o treinamento")](https://www.udemy.com/course/react-com-mango)
 
 ---
 
