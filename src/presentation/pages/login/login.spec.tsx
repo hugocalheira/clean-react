@@ -3,7 +3,7 @@ import { BrowserRouter } from 'react-router-dom'
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { Authentication } from '@/domain/usecases'
 import { AuthenticationSpy } from '@/domain/test'
-import { InvalidCredentialsError } from '@/domain/errors'
+import { InvalidCredentialsError, UnexpectedError } from '@/domain/errors'
 import { ApiContext } from '@/presentation/contexts'
 import { Login } from '@/presentation/pages'
 import { Helper, ValidationStub } from '@/presentation/test'
@@ -129,6 +129,14 @@ describe('Login Component', () => {
     const error = new InvalidCredentialsError()
     jest.spyOn(authenticationSpy, 'auth').mockReturnValueOnce(Promise.reject(error))
     await simulateValidSubmit()
+    await expect(screen.findByTestId('main-error')).resolves.toHaveTextContent(error.message)
+    expect(screen.getByTestId('errorWrap').children).toHaveLength(1)
+  })
+
+  test('Should present error if url has a queryParam error', async () => {
+    const error = new UnexpectedError()
+    jest.spyOn(URLSearchParams.prototype, 'get').mockReturnValueOnce('invalidAccessToken')
+    MakeSut()
     await expect(screen.findByTestId('main-error')).resolves.toHaveTextContent(error.message)
     expect(screen.getByTestId('errorWrap').children).toHaveLength(1)
   })
