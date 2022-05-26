@@ -6,6 +6,7 @@ const { merge } = require('webpack-merge')
 
 module.exports = merge(common, {
   mode: 'production',
+  devtool: 'inline-source-map',
   module: {
     rules: [
       {
@@ -25,11 +26,15 @@ module.exports = merge(common, {
   },
   externals: {
     react: 'React',
-    'react-dom': 'ReactDOM'
+    axios: 'axios',
+    history: 'history',
+    'react-dom': 'ReactDOM',
+    'react-router': 'ReactRouter',
+    'react-router-dom': 'ReactRouterDOM'
   },
   plugins: [
     new DefinePlugin({
-      'process.env.API_URL': JSON.stringify('http://fordevs.herokuapp.com/api')
+      'process.env.API_URL': JSON.stringify('https://fordevs.herokuapp.com/api')
     }),
     new HtmlWebpackPlugin({
       template: './template.prod.html'
