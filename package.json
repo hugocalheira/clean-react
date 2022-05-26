@@ -6,6 +6,7 @@
   "author": "Hugo C. Durães <hugocalheira@gmail.com>",
   "license": "MIT",
   "scripts": {
+    "start": "node index",
     "dev": "webpack-dev-server --open --config webpack.dev.js",
     "build": "webpack --config webpack.prod.js",
     "serve": "webpack serve --open",
@@ -63,6 +64,8 @@
   },
   "dependencies": {
     "axios": "^0.26.1",
+    "express": "^4.18.1",
+    "express-history-api-fallback": "^2.2.1",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
     "react-router-dom": "^6.3.0"
