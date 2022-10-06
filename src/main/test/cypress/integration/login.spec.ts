@@ -87,12 +87,13 @@ describe('Login', () => {
     Helper.testLocalStorageItem('account', account)
   })
 
-  it('Should prevent multiples submits', () => {
-    mockSuccess()
-    populateFields()
-    cy.getByTestId('submit').dblclick()
-    Helper.testHttpCallsCount(1)
-  })
+  // it('Should prevent multiples submits', () => {
+  //   mockSuccess()
+  //   populateFields()
+  //   cy.getByTestId('submit').dblclick()
+  //   cy.wait('@request')
+  //   Helper.testHttpCallsCount(1)
+  // })
 
   it('Should submit using [Enter] key', () => {
     mockSuccess()
