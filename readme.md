@@ -1,5 +1,6 @@
 [![Build Status](https://app.travis-ci.com/hugocalheira/clean-react.svg?branch=master)](https://app.travis-ci.com/hugocalheira/clean-react)
 [![Coverage Status](https://coveralls.io/repos/github/hugocalheira/clean-react/badge.svg?branch=master)](https://coveralls.io/github/hugocalheira/clean-react?branch=master)
+[![Known Vulnerabilities](https://snyk.io/test/github/hugocalheira/clean-react/badge.svg)](https://snyk.io/test/github/hugocalheira/clean-react)
 [![GPLv3 License](https://img.shields.io/badge/License-GPL%20v3-yellow.svg)](https://opensource.org/licenses/)
 [![Open Source](https://badges.frapsoft.com/os/v1/open-source.svg?v=103)](https://opensource.org/)
 
